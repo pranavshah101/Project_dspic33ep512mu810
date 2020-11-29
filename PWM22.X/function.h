@@ -26,30 +26,61 @@ float voltage;
     unsigned long data9[10];
     unsigned long data10[110];
     unsigned long data_1[10];
+    
+ void LED_OFF()
+ {
+     IO_RA2_SetLow();
+     IO_RA3_SetLow();
+     IO_RA4_SetLow();
+     IO_RA5_SetLow();
+     
+ }
+ 
+ void LED_EBC_SEQ()
+ {
+     IO_RA5_SetHigh();   //8
+     __delay_ms(10000);
+     IO_RA2_SetHigh(); //5
+     __delay_ms(1000);
+     IO_RA5_SetLow();//8
+     
+     
+ }
+ 
+ void LED_RBC_SEQ()
+ {
+     IO_RA4_SetHigh();//6
+     __delay_ms(10000);
+     IO_RA3_SetHigh();//5
+      __delay_ms(1000);
+     IO_RA4_SetLow();//6
+     
+    // IO_RD7_SetHigh();   
+ }
 
-void power_rbc_seq()
+void RBC_POWER_SEQ()
 {
 
-M_RS_RL4_SetLow(); //RS_RL4- RBC RELAY START
-__delay_ms(10000);  //delay of exact 8 seconds
-M_RM_RL3_SetLow();//RS_RL3_RBC COIL CONTRACTOR RELAY
-M_RS_RL4_SetHigh();//RS_RL4_RBC_RELAY_START
+RS_RL4_ON();     // RS_RL4- RBC RELAY START
+__delay_ms(10000);     // delay of exact 10 seconds
+RM_RL3_ON();     // RS_RL3_RBC COIL CONTRACTOR RELAY
+RS_RL4_OFF();    // RS_RL4_RBC_RELAY_START
 }
 
-void relay_off()
+void ALL_RELAY_OFF()
 {
-    M_RS_RL4_SetHigh();
-    M_RM_RL3_SetHigh();
-    M_ES_RL2_SetHigh();
-    M_EM_RL1_SetHigh();
+    RS_RL4_OFF();
+    RM_RL3_OFF();
+    ES_RL2_OFF();
+    EM_RL1_OFF();
 }
 
-void power_ebc_seq()
+void EBC_POWER_SEQ()
 {
-M_ES_RL2_SetLow(); //RS_RL4- RBC RELAY START
-__delay_ms(10000);  //delay of exact 8 seconds
-M_EM_RL1_SetLow();//RS_RL3_RBC COIL CONTRACTOR RELAY
-M_ES_RL2_SetHigh();//RS_RL4_RBC_RELAY_START
+ES_RL2_ON();     // RS_RL4- RBC RELAY START
+__delay_ms(10000);     // delay of exact 10 seconds
+EM_RL1_ON();     // RS_RL3_RBC COIL CONTRACTOR RELAY
+ES_RL2_OFF();    // RS_RL4_RBC_RELAY_START
 }
 
 void init_ADC()
@@ -72,11 +103,7 @@ AD1CHS0bits.CH0SA = 0;
 AD1CHS0bits.CH0NA = 0; 
 AD1CON1bits.ADON = 1;
 
-    
-    
-    
-    
-    __delay_us(100);
+__delay_us(100);
     
   
    

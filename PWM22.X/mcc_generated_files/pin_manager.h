@@ -1245,7 +1245,7 @@
     </code>
 
 */
-#define M_RS_RL4_SetHigh()          (_LATB12 = 1)
+#define RS_RL4_OFF()          (_LATB12 = 1)
 /**
   @Summary
     Sets the GPIO pin, RB12, low using LATB12.
@@ -1269,7 +1269,7 @@
     </code>
 
 */
-#define M_RS_RL4_SetLow()           (_LATB12 = 0)
+#define RS_RL4_ON()           (_LATB12 = 0)
 /**
   @Summary
     Toggles the GPIO pin, RB12, using LATB12.
@@ -1391,7 +1391,7 @@
     </code>
 
 */
-#define M_RM_RL3_SetHigh()          (_LATB13 = 1)
+#define RM_RL3_OFF()          (_LATB13 = 1)
 /**
   @Summary
     Sets the GPIO pin, RB13, low using LATB13.
@@ -1415,7 +1415,7 @@
     </code>
 
 */
-#define M_RM_RL3_SetLow()           (_LATB13 = 0)
+#define RM_RL3_ON()           (_LATB13 = 0)
 /**
   @Summary
     Toggles the GPIO pin, RB13, using LATB13.
@@ -1537,7 +1537,7 @@
     </code>
 
 */
-#define M_ES_RL2_SetHigh()          (_LATB14 = 1)
+#define ES_RL2_OFF()          (_LATB14 = 1)
 /**
   @Summary
     Sets the GPIO pin, RB14, low using LATB14.
@@ -1561,7 +1561,7 @@
     </code>
 
 */
-#define M_ES_RL2_SetLow()           (_LATB14 = 0)
+#define ES_RL2_ON()           (_LATB14 = 0)
 /**
   @Summary
     Toggles the GPIO pin, RB14, using LATB14.
@@ -1683,7 +1683,7 @@
     </code>
 
 */
-#define M_EM_RL1_SetHigh()          (_LATB15 = 1)
+#define EM_RL1_OFF()          (_LATB15 = 1)
 /**
   @Summary
     Sets the GPIO pin, RB15, low using LATB15.
@@ -1707,7 +1707,7 @@
     </code>
 
 */
-#define M_EM_RL1_SetLow()           (_LATB15 = 0)
+#define EM_RL1_ON()           (_LATB15 = 0)
 /**
   @Summary
     Toggles the GPIO pin, RB15, using LATB15.

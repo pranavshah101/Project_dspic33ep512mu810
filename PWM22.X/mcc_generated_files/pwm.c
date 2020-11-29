@@ -649,5 +649,3 @@ void PWM_EBC_Shut_Down()
     PTCON=0x0000;
     
 }
-
-

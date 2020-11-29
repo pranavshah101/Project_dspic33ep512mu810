@@ -4,17 +4,14 @@
 #include "mcc_generated_files/pin_manager.h"
 #include  <xc.h>
 #include <libpic30.h>
-
 #include "lcd.h"
 #include "function.h"
 
-int phase_a[110],phase_b[110],phase_c[110];
+int phase_B[110],phase_Y[110],phase_R[110];
 int i;
-unsigned char flag_rbc=1;
-unsigned char flag_ebc=1;
 float voltage,voltage1,voltage2;
 
-void My_Timer_ISR_1()
+void My_Timer_ISR()
 {
     init_ADC();              // For single channel
       
@@ -22,39 +19,25 @@ void My_Timer_ISR_1()
     {
       while(!IFS0bits.AD1IF);
       IFS0bits.AD1IF=0;
-      phase_a[i]=ADC1BUF0;          // B-AN0
-      phase_b[i]=ADC1BUF1;         // Y-AN1
-      phase_c[i]=ADC1BUF2;         // R-AN2
+      phase_B[i]=ADC1BUF0;         //  B-AN0
+      phase_Y[i]=ADC1BUF1;         //  Y-AN1
+      phase_R[i]=ADC1BUF2;         //  R-AN2
       
-     
-      
-      
-      if(phase_a[i]>phase_a[0] || phase_b[i]>phase_b[0] || phase_c[i]>phase_c[0] )
+         
+      if(phase_B[i]>phase_B[0] || phase_Y[i]>phase_Y[0] || phase_R[i]>phase_R[0] )
       {
           
-       phase_a[0]=phase_a[i];
-       phase_b[0]=phase_b[i];
-       phase_c[0]=phase_c[i];
+       phase_B[0]=phase_B[i];
+       phase_Y[0]=phase_Y[i];
+       phase_R[0]=phase_R[i];
        
       }
          
-      voltage = (phase_a[0]-2361)/(float)(4.55);
-      voltage1 = (phase_b[0]-2359)/(float)(4.55);
-      voltage2 = (phase_c[0]-2355)/(float)(4.55);
+      voltage = (phase_B[0]-2361)/(float)(4.55);
+      voltage1 = (phase_Y[0]-2359)/(float)(4.55);
+      voltage2 = (phase_R[0]-2355)/(float)(4.55);
       
-      sprintf(data,"%d",phase_a[0]);        // Displaying phase B
-      //strcat(data,"=V_B");
-      LCD_String_xy(0,1,data);
       
-      sprintf(data1,"%d",phase_b[0]);        // Displaying phase Y
-      //strcat(data1,"=V_Y");
-      LCD_String_xy(0,8,data1);
-     
-      sprintf(data2,"%d",phase_c[0]);        // Displaying phase R
-      //strcat(data2,"=V_R");
-      LCD_String_xy(2,1,data2);
-         
-      __delay_ms(30);
             
     }
    
@@ -66,11 +49,11 @@ int main(void)
     
    SYSTEM_Initialize();
    LCD_Init();      
-   TMR1_SetInterruptHandler(My_Timer_ISR_1);   
+   TMR1_SetInterruptHandler(My_Timer_ISR);   
    TMR1_Start();
    
    int p,j,k=5,l,n,m,a;
-   
+   int flag_RBC=1,flag_EBC=1;
    while(1)
    { 
     
@@ -79,23 +62,39 @@ int main(void)
     n=IO_RA6_GetValue();     // Switch for scrolling display //UP
     p=IO_RA7_GetValue();     // Another switch for scrolling display//DOWN
     m=M_RBC_FLT_GetValue();  // RD6-RBC IGBT FAULT
-    a=M_EBC_FLT_GetValue();  //RD7-EBC-IGBT FAULT 
+    a=M_EBC_FLT_GetValue();
     
-    if((phase_a[0]>3340 && phase_a[0]<3400)   && (phase_b[0]>3340 && phase_b[0]<3400) && (phase_c[0]>3340 && phase_c[0]<3400))  // 3 phases are present
+    sprintf(data,"%d",phase_B[0]);        // Displaying phase B
+     // strcat(data,"=V_B");
+      LCD_String_xy(0,1,data);
+      
+      sprintf(data1,"%d",phase_Y[0]);        // Displaying phase Y
+      //strcat(data1,"=V_Y");
+      LCD_String_xy(0,8,data1);
+     
+      sprintf(data2,"%d",phase_R[0]);        // Displaying phase R
+      //strcat(data2,"=V_R");
+      LCD_String_xy(2,1,data2);
+      __delay_ms(50);
+    
+    
+    
+    /*For RBC MODE*/
+    if((phase_Y[0]>3340) &&( phase_R[0]>3340 )&& (phase_B[0]>2350)) 
     {
-        
-       
+        IO_RA15_SetLow();
         PWM_EBC_Shut_Down();
-        
-        
-        if(flag_rbc==1)
+        if(flag_RBC==1)
         {
-           
-            relay_off();
-            power_rbc_seq();
+            //ALL_RELAY_OFF();
             
+            LED_OFF();
+            LED_RBC_SEQ();  // 8 ,after 10 secs 
+            //RBC_POWER_SEQ();
+            flag_RBC=0;
+            
+            LED_OFF();
         }
-        
         
       
       PWM_RBC_MODE();
@@ -105,7 +104,7 @@ int main(void)
           
       
       if(j==0&&l==1)   //ENTER PRESSED FOR DECREMENT
-    {
+      {
         k = k+1;                   // Increment by 5% 
             if(k>=51)
             {
@@ -134,25 +133,29 @@ int main(void)
         //__delay_us(200);
     }
       }
-      else if(m==1)                         // RBC Fault detected
+      else if(m==1)                         //Fault detected
       {
           PWM_RBC_Shut_Down();
       }
           
-      flag_rbc=0;
-      flag_ebc=1;
+      flag_RBC=0;  // yes, i am here, on family call
+      
+      flag_EBC=1;
     }
     
-   else if((phase_a[0]>2350 && phase_a[0]<2362 ) || (phase_b[0]>2350 && phase_b[0]<2362) || (phase_c[0]>2350 && phase_c[0]<2362))
+   else if((phase_B[0]>2350 && phase_B[0]<2362 ) || (phase_Y[0]>2350 && phase_Y[0]<2362) || (phase_R[0]>2350 && phase_R[0]<2362))
    {
+       IO_RA15_SetHigh();
        PWM_RBC_Shut_Down();
        
-       
-       
-       if(flag_ebc==1)
+       if(flag_EBC==1)
        {
-           relay_off();
-           power_ebc_seq();
+           //ALL_RELAY_OFF();
+           LED_OFF();
+           LED_EBC_SEQ();
+           //EBC_POWER_SEQ();
+           flag_EBC=0;
+           LED_OFF();
        }
       PWM_EBC_MODE();
        if(a==0)               //No fault detected
@@ -194,21 +197,11 @@ int main(void)
           PWM_EBC_Shut_Down();
       }
       
-      flag_ebc=0;
-      flag_rbc=1;
+      flag_EBC=0;
+      flag_RBC=1;
+      
        
- 
-    
-    
-    
-    
-    
- 
 }
 
 }
-
-   
-        
-
 }
