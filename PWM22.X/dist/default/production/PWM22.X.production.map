@@ -135,13 +135,13 @@ section                    address   length (PC units)   length (bytes) (dec)
 -------                    -------   -----------------   --------------------
 .text                        0x200               0xe62          0x1593  (5523)
 .const                      0x1062                0x30            0x48  (72)
-.text                       0x1092               0xca4          0x12f6  (4854)
-.dinit                      0x1d36                0x5e            0x8d  (141)
-.text                       0x1d94                0x88            0xcc  (204)
-.init.delay32               0x1e1c                0x1c            0x2a  (42)
-.text                       0x1e38                0x28            0x3c  (60)
+.text                       0x1092               0xc9e          0x12ed  (4845)
+.dinit                      0x1d30                0x5e            0x8d  (141)
+.text                       0x1d8e                0x88            0xcc  (204)
+.init.delay32               0x1e16                0x1c            0x2a  (42)
+.text                       0x1e32                0x28            0x3c  (60)
 
-                 Total program memory used (bytes):         0x2a90  (10896) 2%
+                 Total program memory used (bytes):         0x2a87  (10887) 2%
 
 
 Ivt Memory  [Origin = 0x4, Length = 0x1fc]
@@ -334,55 +334,55 @@ External Symbols in Program Memory (by address):
                   0x00121e                  _ALL_RELAY_OFF
                   0x00122c                  _EBC_POWER_SEQ
                   0x00123e                  _init_ADC
-                  0x001284                  _init_adc
-                  0x0012fa                  _InitTmr3
-                  0x00130c                  __AD1Interrupt
-                  0x00134e                  _read_input_current
-                  0x0013fe                  _read_input_voltage
-                  0x00143c                  _read_dc_voltage
-                  0x0014ec                  _My_Timer_ISR
-                  0x0015c8                  _main
-                  0x001808                  _PWM_RBC_MODE
-                  0x0018e4                  _PWM_EBC_MODE
-                  0x0019c6                  _PWM_SpecialEvent_Tasks
-                  0x0019e0                  _PWM_Generator1_Tasks
-                  0x0019fa                  _PWM_Generator2_Tasks
-                  0x001a14                  _PWM_Generator3_Tasks
-                  0x001a2e                  _PWM_Generator4_Tasks
-                  0x001a48                  _PWM_Generator5_Tasks
-                  0x001a62                  _PWM_Generator6_Tasks
-                  0x001a76                  _PWM_Duty_Cycle_RBC
-                  0x001a96                  _PWM_RBC_Shut_Down
-                  0x001aa0                  _PWM_Duty_Cycle_EBC
-                  0x001ac0                  _PWM_EBC_Shut_Down
-                  0x001aca                  _RESET_GetCause
-                  0x001bd6                  _RESET_CauseClearAll
-                  0x001bde                  _TMR1_Initialize
-                  0x001c02                  __T1Interrupt
-                  0x001c38                  _TMR1_Period16BitSet
-                  0x001c4a                  _TMR1_Period16BitGet
-                  0x001c52                  _TMR1_Counter16BitSet
-                  0x001c64                  _TMR1_Counter16BitGet
-                  0x001c72                  _TMR1_SetInterruptHandler
-                  0x001c82                  _TMR1_Start
-                  0x001c92                  _TMR1_Stop
-                  0x001c9c                  _TMR1_GetElapsedThenClear
-                  0x001cb4                  _TMR1_SoftwareCounterGet
-                  0x001cc0                  _TMR1_SoftwareCounterClear
-                  0x001ccc                  _PIN_MANAGER_Initialize
-                  0x001d94                  _CLOCK_Initialize
-                  0x001e06                  _SYSTEM_Initialize
-                  0x001e1c                  ___delay32
-                  0x001e50                  _INTERRUPT_Initialize
+                  0x00127e                  _init_adc
+                  0x0012f4                  _InitTmr3
+                  0x001306                  __AD1Interrupt
+                  0x001348                  _read_input_current
+                  0x0013f8                  _read_input_voltage
+                  0x001436                  _read_dc_voltage
+                  0x0014e6                  _My_Timer_ISR
+                  0x0015c2                  _main
+                  0x001802                  _PWM_RBC_MODE
+                  0x0018de                  _PWM_EBC_MODE
+                  0x0019c0                  _PWM_SpecialEvent_Tasks
+                  0x0019da                  _PWM_Generator1_Tasks
+                  0x0019f4                  _PWM_Generator2_Tasks
+                  0x001a0e                  _PWM_Generator3_Tasks
+                  0x001a28                  _PWM_Generator4_Tasks
+                  0x001a42                  _PWM_Generator5_Tasks
+                  0x001a5c                  _PWM_Generator6_Tasks
+                  0x001a70                  _PWM_Duty_Cycle_RBC
+                  0x001a90                  _PWM_RBC_Shut_Down
+                  0x001a9a                  _PWM_Duty_Cycle_EBC
+                  0x001aba                  _PWM_EBC_Shut_Down
+                  0x001ac4                  _RESET_GetCause
+                  0x001bd0                  _RESET_CauseClearAll
+                  0x001bd8                  _TMR1_Initialize
+                  0x001bfc                  __T1Interrupt
+                  0x001c32                  _TMR1_Period16BitSet
+                  0x001c44                  _TMR1_Period16BitGet
+                  0x001c4c                  _TMR1_Counter16BitSet
+                  0x001c5e                  _TMR1_Counter16BitGet
+                  0x001c6c                  _TMR1_SetInterruptHandler
+                  0x001c7c                  _TMR1_Start
+                  0x001c8c                  _TMR1_Stop
+                  0x001c96                  _TMR1_GetElapsedThenClear
+                  0x001cae                  _TMR1_SoftwareCounterGet
+                  0x001cba                  _TMR1_SoftwareCounterClear
+                  0x001cc6                  _PIN_MANAGER_Initialize
+                  0x001d8e                  _CLOCK_Initialize
+                  0x001e00                  _SYSTEM_Initialize
+                  0x001e16                  ___delay32
+                  0x001e4a                  _INTERRUPT_Initialize
                   0xf80004                  __FGS.sec
 
 External Symbols in Program Memory (by name):
 
                   0x00121e                  _ALL_RELAY_OFF
-                  0x001d94                  _CLOCK_Initialize
+                  0x001d8e                  _CLOCK_Initialize
                   0x00122c                  _EBC_POWER_SEQ
-                  0x001e50                  _INTERRUPT_Initialize
-                  0x0012fa                  _InitTmr3
+                  0x001e4a                  _INTERRUPT_Initialize
+                  0x0012f4                  _InitTmr3
                   0x001116                  _LCD_Char
                   0x001192                  _LCD_Clear
                   0x0010e8                  _LCD_Command
@@ -393,37 +393,37 @@ External Symbols in Program Memory (by name):
                   0x0011ce                  _LED_OFF
                   0x0011f4                  _LED_RBC_SEQ
                   0x0011a2                  _MSdelay
-                  0x0014ec                  _My_Timer_ISR
-                  0x001ccc                  _PIN_MANAGER_Initialize
-                  0x001aa0                  _PWM_Duty_Cycle_EBC
-                  0x001a76                  _PWM_Duty_Cycle_RBC
-                  0x0018e4                  _PWM_EBC_MODE
-                  0x001ac0                  _PWM_EBC_Shut_Down
-                  0x0019e0                  _PWM_Generator1_Tasks
-                  0x0019fa                  _PWM_Generator2_Tasks
-                  0x001a14                  _PWM_Generator3_Tasks
-                  0x001a2e                  _PWM_Generator4_Tasks
-                  0x001a48                  _PWM_Generator5_Tasks
-                  0x001a62                  _PWM_Generator6_Tasks
-                  0x001808                  _PWM_RBC_MODE
-                  0x001a96                  _PWM_RBC_Shut_Down
-                  0x0019c6                  _PWM_SpecialEvent_Tasks
+                  0x0014e6                  _My_Timer_ISR
+                  0x001cc6                  _PIN_MANAGER_Initialize
+                  0x001a9a                  _PWM_Duty_Cycle_EBC
+                  0x001a70                  _PWM_Duty_Cycle_RBC
+                  0x0018de                  _PWM_EBC_MODE
+                  0x001aba                  _PWM_EBC_Shut_Down
+                  0x0019da                  _PWM_Generator1_Tasks
+                  0x0019f4                  _PWM_Generator2_Tasks
+                  0x001a0e                  _PWM_Generator3_Tasks
+                  0x001a28                  _PWM_Generator4_Tasks
+                  0x001a42                  _PWM_Generator5_Tasks
+                  0x001a5c                  _PWM_Generator6_Tasks
+                  0x001802                  _PWM_RBC_MODE
+                  0x001a90                  _PWM_RBC_Shut_Down
+                  0x0019c0                  _PWM_SpecialEvent_Tasks
                   0x00120c                  _RBC_POWER_SEQ
-                  0x001bd6                  _RESET_CauseClearAll
-                  0x001aca                  _RESET_GetCause
-                  0x001e06                  _SYSTEM_Initialize
-                  0x001c64                  _TMR1_Counter16BitGet
-                  0x001c52                  _TMR1_Counter16BitSet
-                  0x001c9c                  _TMR1_GetElapsedThenClear
-                  0x001bde                  _TMR1_Initialize
-                  0x001c4a                  _TMR1_Period16BitGet
-                  0x001c38                  _TMR1_Period16BitSet
-                  0x001c72                  _TMR1_SetInterruptHandler
-                  0x001cc0                  _TMR1_SoftwareCounterClear
-                  0x001cb4                  _TMR1_SoftwareCounterGet
-                  0x001c82                  _TMR1_Start
-                  0x001c92                  _TMR1_Stop
-                  0x00130c                  __AD1Interrupt
+                  0x001bd0                  _RESET_CauseClearAll
+                  0x001ac4                  _RESET_GetCause
+                  0x001e00                  _SYSTEM_Initialize
+                  0x001c5e                  _TMR1_Counter16BitGet
+                  0x001c4c                  _TMR1_Counter16BitSet
+                  0x001c96                  _TMR1_GetElapsedThenClear
+                  0x001bd8                  _TMR1_Initialize
+                  0x001c44                  _TMR1_Period16BitGet
+                  0x001c32                  _TMR1_Period16BitSet
+                  0x001c6c                  _TMR1_SetInterruptHandler
+                  0x001cba                  _TMR1_SoftwareCounterClear
+                  0x001cae                  _TMR1_SoftwareCounterGet
+                  0x001c7c                  _TMR1_Start
+                  0x001c8c                  _TMR1_Stop
+                  0x001306                  __AD1Interrupt
                   0x000350                  __AddressError
                   0x000390                  __DMACError
                   0x0003fc                  __DefaultInterrupt
@@ -435,11 +435,11 @@ External Symbols in Program Memory (by name):
                   0x000c9e                  __Puttxt
                   0x0003d0                  __SoftTrapError
                   0x00032e                  __StackError
-                  0x001c02                  __T1Interrupt
+                  0x001bfc                  __T1Interrupt
                   0x000e16                  __Vacopy
                   0x000698                  ___Printf_cdnopuxX
                   0x0007fc                  ___Putfld_cdnopuxX
-                  0x001e1c                  ___delay32
+                  0x001e16                  ___delay32
                   0x000fa6                  ___divdi3
                   0x000402                  ___divsf3
                   0x000e1a                  ___divsi3
@@ -467,12 +467,12 @@ External Symbols in Program Memory (by name):
                   0x000200                  __resetPRI
                   0x00067a                  __sprintf_cdnopuxX
                   0x00123e                  _init_ADC
-                  0x001284                  _init_adc
-                  0x0015c8                  _main
+                  0x00127e                  _init_adc
+                  0x0015c2                  _main
                   0x000652                  _memcpy
-                  0x00143c                  _read_dc_voltage
-                  0x00134e                  _read_input_current
-                  0x0013fe                  _read_input_voltage
+                  0x001436                  _read_dc_voltage
+                  0x001348                  _read_input_current
+                  0x0013f8                  _read_input_voltage
                   0x000a18                  _strchr
                   0x000660                  _strlen
                   0x00066c                  sprintf_cdnopuxX.EPeo:_prout
@@ -682,20 +682,20 @@ __FUID0
 .comment
  *(.comment)
 
-.debug_info       0x000000       0xf6ad
+.debug_info       0x000000       0xf3fa
  *(.debug_info)
- .debug_info      0x000000        0x67c build/default/production/mcc_generated_files/pin_manager.o
- .debug_info      0x00067c        0x647 build/default/production/mcc_generated_files/traps.o
- .debug_info      0x000cc3       0x37dc build/default/production/mcc_generated_files/system.o
- .debug_info      0x00449f        0x30d build/default/production/mcc_generated_files/interrupt_manager.o
- .debug_info      0x0047ac       0x3e77 build/default/production/mcc_generated_files/pwm.o
- .debug_info      0x008623        0x597 build/default/production/mcc_generated_files/clock.o
- .debug_info      0x008bba        0x4f0 build/default/production/mcc_generated_files/reset.o
- .debug_info      0x0090aa        0x920 build/default/production/mcc_generated_files/tmr1.o
- .debug_info      0x0099ca       0x5ce3 build/default/production/main.o
+ .debug_info      0x000000        0x62f build/default/production/mcc_generated_files/pin_manager.o
+ .debug_info      0x00062f        0x5fa build/default/production/mcc_generated_files/traps.o
+ .debug_info      0x000c29       0x378f build/default/production/mcc_generated_files/system.o
+ .debug_info      0x0043b8        0x2c0 build/default/production/mcc_generated_files/interrupt_manager.o
+ .debug_info      0x004678       0x3e2a build/default/production/mcc_generated_files/pwm.o
+ .debug_info      0x0084a2        0x54a build/default/production/mcc_generated_files/clock.o
+ .debug_info      0x0089ec        0x4a3 build/default/production/mcc_generated_files/reset.o
+ .debug_info      0x008e8f        0x8d3 build/default/production/mcc_generated_files/tmr1.o
+ .debug_info      0x009762       0x5c98 build/default/production/main.o
  *(.gnu.linkonce.wi.*)
 
-.debug_abbrev     0x000000        0xa2e
+.debug_abbrev     0x000000        0xa4a
  *(.debug_abbrev)
  .debug_abbrev    0x000000         0x4c build/default/production/mcc_generated_files/pin_manager.o
  .debug_abbrev    0x00004c        0x10d build/default/production/mcc_generated_files/traps.o
@@ -706,9 +706,9 @@ __FUID0
  .debug_abbrev    0x000538          0x1 build/default/production/mcc_generated_files/mcc.o
  .debug_abbrev    0x000539         0xf6 build/default/production/mcc_generated_files/reset.o
  .debug_abbrev    0x00062f        0x18d build/default/production/mcc_generated_files/tmr1.o
- .debug_abbrev    0x0007bc        0x272 build/default/production/main.o
+ .debug_abbrev    0x0007bc        0x28e build/default/production/main.o
 
-.debug_line       0x000000        0xaf4
+.debug_line       0x000000        0xaf5
  *(.debug_line)
  .debug_line      0x000000         0xd5 build/default/production/mcc_generated_files/pin_manager.o
  .debug_line      0x0000d5        0x142 build/default/production/mcc_generated_files/traps.o
@@ -719,7 +719,7 @@ __FUID0
  .debug_line      0x000621         0x1a build/default/production/mcc_generated_files/mcc.o
  .debug_line      0x00063b        0x14b build/default/production/mcc_generated_files/reset.o
  .debug_line      0x000786        0x138 build/default/production/mcc_generated_files/tmr1.o
- .debug_line      0x0008be        0x236 build/default/production/main.o
+ .debug_line      0x0008be        0x237 build/default/production/main.o
 
 .debug_frame      0x000000        0xb44
  *(.debug_frame)
@@ -3726,8 +3726,8 @@ __c30_signature
 .const              0x9062         0x30 load address 0x001062  
  .const             0x9062         0x30 build/default/production/main.o
 
-.text             0x001092        0xca4
- .text            0x001092        0x776 build/default/production/main.o
+.text             0x001092        0xc9e
+ .text            0x001092        0x770 build/default/production/main.o
                   0x001092                  _LCD_Init
                   0x0010e8                  _LCD_Command
                   0x001116                  _LCD_Char
@@ -3742,71 +3742,71 @@ __c30_signature
                   0x00121e                  _ALL_RELAY_OFF
                   0x00122c                  _EBC_POWER_SEQ
                   0x00123e                  _init_ADC
-                  0x001284                  _init_adc
-                  0x0012fa                  _InitTmr3
-                  0x00130c                  __AD1Interrupt
-                  0x00134e                  _read_input_current
-                  0x0013fe                  _read_input_voltage
-                  0x00143c                  _read_dc_voltage
-                  0x0014ec                  _My_Timer_ISR
-                  0x0015c8                  _main
- .text            0x001808        0x2c2 build/default/production/mcc_generated_files/pwm.o
-                  0x001808                  _PWM_RBC_MODE
-                  0x0018e4                  _PWM_EBC_MODE
-                  0x0019c0                  _PWM_SpecialEvent_CallBack
-                  0x0019c6                  _PWM_SpecialEvent_Tasks
-                  0x0019da                  _PWM_Generator1_CallBack
-                  0x0019e0                  _PWM_Generator1_Tasks
-                  0x0019f4                  _PWM_Generator2_CallBack
-                  0x0019fa                  _PWM_Generator2_Tasks
-                  0x001a0e                  _PWM_Generator3_CallBack
-                  0x001a14                  _PWM_Generator3_Tasks
-                  0x001a28                  _PWM_Generator4_CallBack
-                  0x001a2e                  _PWM_Generator4_Tasks
-                  0x001a42                  _PWM_Generator5_CallBack
-                  0x001a48                  _PWM_Generator5_Tasks
-                  0x001a5c                  _PWM_Generator6_CallBack
-                  0x001a62                  _PWM_Generator6_Tasks
-                  0x001a76                  _PWM_Duty_Cycle_RBC
-                  0x001a96                  _PWM_RBC_Shut_Down
-                  0x001aa0                  _PWM_Duty_Cycle_EBC
-                  0x001ac0                  _PWM_EBC_Shut_Down
- .text            0x001aca        0x114 build/default/production/mcc_generated_files/reset.o
-                  0x001aca                  _RESET_GetCause
-                  0x001ad2                  _RESET_CauseHandler
-                  0x001bd6                  _RESET_CauseClearAll
- .text            0x001bde         0xee build/default/production/mcc_generated_files/tmr1.o
-                  0x001bde                  _TMR1_Initialize
-                  0x001c02                  __T1Interrupt
-                  0x001c38                  _TMR1_Period16BitSet
-                  0x001c4a                  _TMR1_Period16BitGet
-                  0x001c52                  _TMR1_Counter16BitSet
-                  0x001c64                  _TMR1_Counter16BitGet
-                  0x001c6c                  _TMR1_CallBack
-                  0x001c72                  _TMR1_SetInterruptHandler
-                  0x001c82                  _TMR1_Start
-                  0x001c92                  _TMR1_Stop
-                  0x001c9c                  _TMR1_GetElapsedThenClear
-                  0x001cb4                  _TMR1_SoftwareCounterGet
-                  0x001cc0                  _TMR1_SoftwareCounterClear
- .text            0x001ccc         0x6a build/default/production/mcc_generated_files/pin_manager.o
-                  0x001ccc                  _PIN_MANAGER_Initialize
+                  0x00127e                  _init_adc
+                  0x0012f4                  _InitTmr3
+                  0x001306                  __AD1Interrupt
+                  0x001348                  _read_input_current
+                  0x0013f8                  _read_input_voltage
+                  0x001436                  _read_dc_voltage
+                  0x0014e6                  _My_Timer_ISR
+                  0x0015c2                  _main
+ .text            0x001802        0x2c2 build/default/production/mcc_generated_files/pwm.o
+                  0x001802                  _PWM_RBC_MODE
+                  0x0018de                  _PWM_EBC_MODE
+                  0x0019ba                  _PWM_SpecialEvent_CallBack
+                  0x0019c0                  _PWM_SpecialEvent_Tasks
+                  0x0019d4                  _PWM_Generator1_CallBack
+                  0x0019da                  _PWM_Generator1_Tasks
+                  0x0019ee                  _PWM_Generator2_CallBack
+                  0x0019f4                  _PWM_Generator2_Tasks
+                  0x001a08                  _PWM_Generator3_CallBack
+                  0x001a0e                  _PWM_Generator3_Tasks
+                  0x001a22                  _PWM_Generator4_CallBack
+                  0x001a28                  _PWM_Generator4_Tasks
+                  0x001a3c                  _PWM_Generator5_CallBack
+                  0x001a42                  _PWM_Generator5_Tasks
+                  0x001a56                  _PWM_Generator6_CallBack
+                  0x001a5c                  _PWM_Generator6_Tasks
+                  0x001a70                  _PWM_Duty_Cycle_RBC
+                  0x001a90                  _PWM_RBC_Shut_Down
+                  0x001a9a                  _PWM_Duty_Cycle_EBC
+                  0x001aba                  _PWM_EBC_Shut_Down
+ .text            0x001ac4        0x114 build/default/production/mcc_generated_files/reset.o
+                  0x001ac4                  _RESET_GetCause
+                  0x001acc                  _RESET_CauseHandler
+                  0x001bd0                  _RESET_CauseClearAll
+ .text            0x001bd8         0xee build/default/production/mcc_generated_files/tmr1.o
+                  0x001bd8                  _TMR1_Initialize
+                  0x001bfc                  __T1Interrupt
+                  0x001c32                  _TMR1_Period16BitSet
+                  0x001c44                  _TMR1_Period16BitGet
+                  0x001c4c                  _TMR1_Counter16BitSet
+                  0x001c5e                  _TMR1_Counter16BitGet
+                  0x001c66                  _TMR1_CallBack
+                  0x001c6c                  _TMR1_SetInterruptHandler
+                  0x001c7c                  _TMR1_Start
+                  0x001c8c                  _TMR1_Stop
+                  0x001c96                  _TMR1_GetElapsedThenClear
+                  0x001cae                  _TMR1_SoftwareCounterGet
+                  0x001cba                  _TMR1_SoftwareCounterClear
+ .text            0x001cc6         0x6a build/default/production/mcc_generated_files/pin_manager.o
+                  0x001cc6                  _PIN_MANAGER_Initialize
 
-.dinit            0x001d36         0x5e
- .dinit           0x001d36         0x5e data_init
+.dinit            0x001d30         0x5e
+ .dinit           0x001d30         0x5e data_init
 
-.text             0x001d94         0x88
- .text            0x001d94         0x54 build/default/production/mcc_generated_files/clock.o
-                  0x001d94                  _CLOCK_Initialize
- .text            0x001de8         0x34 build/default/production/mcc_generated_files/system.o
-                  0x001e06                  _SYSTEM_Initialize
+.text             0x001d8e         0x88
+ .text            0x001d8e         0x54 build/default/production/mcc_generated_files/clock.o
+                  0x001d8e                  _CLOCK_Initialize
+ .text            0x001de2         0x34 build/default/production/mcc_generated_files/system.o
+                  0x001e00                  _SYSTEM_Initialize
 
-.init.delay32     0x001e1c         0x1c
- .init.delay32    0x001e1c         0x1c c:/program files (x86)/microchip/xc16/v1.31/bin/bin/../../lib\liblega-pic30-elf.a(delay32ep.Leo)
-                  0x001e1c                  ___delay32
+.init.delay32     0x001e16         0x1c
+ .init.delay32    0x001e16         0x1c c:/program files (x86)/microchip/xc16/v1.31/bin/bin/../../lib\liblega-pic30-elf.a(delay32ep.Leo)
+                  0x001e16                  ___delay32
 
-.text             0x001e38         0x28
- .text            0x001e38         0x18 build/default/production/mcc_generated_files/traps.o
-                  0x001e38                  _TRAPS_halt_on_error
- .text            0x001e50         0x10 build/default/production/mcc_generated_files/interrupt_manager.o
-                  0x001e50                  _INTERRUPT_Initialize
+.text             0x001e32         0x28
+ .text            0x001e32         0x18 build/default/production/mcc_generated_files/traps.o
+                  0x001e32                  _TRAPS_halt_on_error
+ .text            0x001e4a         0x10 build/default/production/mcc_generated_files/interrupt_manager.o
+                  0x001e4a                  _INTERRUPT_Initialize

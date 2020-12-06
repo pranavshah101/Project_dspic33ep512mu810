@@ -87,23 +87,26 @@ void init_ADC()
 {
    
    ANSELB=ANSELA=ANSELC=ANSELD=ANSELG=ANSELE=0x0000;
-   ANSELB=0x0107;
+   ANSELB=0x0107;     // 4 channel
+  // ANSELB=0x0007;      // 3 channel
     
     AD1CON1 = 0x04E4;    // Enable 12-bit mode, auto-sample and auto-conversion  
     AD1CON2 = 0x240C;   //  Sample 4 channels alternately using channel scanning
+   // AD1CON2 = 0x2408;     // Sample 3 channels alternately using channel scanning
 //    AD1CON2.VCFG=1;
     AD1CON3 = 0x0F0F;   //  Sample for 15*TAD before converting
+    //AD1CON3 = 0x117F;     // 500 us sampling time
     AD1CON4 = 0x0000;
     AD1CSSH = 0x0000;
     AD1CSSL = 0x0107; // Select AN2, AN3, AN5 and AN8 for scanning
     
-    
+    //AD1CSSL = 0x0007;   // 3 channel
     
 AD1CHS0bits.CH0SA = 0; 
 AD1CHS0bits.CH0NA = 0; 
 AD1CON1bits.ADON = 1;
 
-__delay_us(100);
+//__delay_us(100);
     
   
    
