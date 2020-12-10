@@ -62,7 +62,7 @@ void PIN_MANAGER_Initialize (void)
      * Setting the Output Latch SFR(s)
      ***************************************************************************/
     LATA = 0x0000;
-    LATB = 0x0000;
+    LATB = 0xF000;
     LATC = 0x0000;
     LATD = 0x0000;
     LATE = 0x0000;

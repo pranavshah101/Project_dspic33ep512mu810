@@ -44,7 +44,7 @@
 
 #ifndef _XTAL_FREQ
 #define _XTAL_FREQ  8000000UL
-#define FCY 4000000UL
+#define FCY 8000000UL
 #endif
 
 #include "xc.h"

@@ -14,7 +14,7 @@ int ain10Buff[SAMP_BUFF_SIZE];
 int scanCounter = 0;
 int sampleCounter = 0;
 int var,var1,var2,var3=0,var4=0,var5=0,var8=0,var9=0,var10=0;
-float voltage;
+//float voltage;
 
     unsigned long data[110];
     unsigned long data1[110];
@@ -62,7 +62,7 @@ void RBC_POWER_SEQ()
 {
 
 RS_RL4_ON();     // RS_RL4- RBC RELAY START
-__delay_ms(10000);     // delay of exact 10 seconds
+__delay_ms(2300);     // delay of exact 10 seconds
 RM_RL3_ON();     // RS_RL3_RBC COIL CONTRACTOR RELAY
 RS_RL4_OFF();    // RS_RL4_RBC_RELAY_START
 }
@@ -77,10 +77,10 @@ void ALL_RELAY_OFF()
 
 void EBC_POWER_SEQ()
 {
-ES_RL2_ON();     // RS_RL4- RBC RELAY START
-__delay_ms(10000);     // delay of exact 10 seconds
-EM_RL1_ON();     // RS_RL3_RBC COIL CONTRACTOR RELAY
-ES_RL2_OFF();    // RS_RL4_RBC_RELAY_START
+ES_RL2_ON();            // RS_RL4- RBC RELAY START
+__delay_ms(3600);     // delay of exact 10 seconds
+EM_RL1_ON();           // RS_RL3_RBC COIL CONTRACTOR RELAY
+ES_RL2_OFF();          // RS_RL4_RBC_RELAY_START
 }
 
 void init_ADC()

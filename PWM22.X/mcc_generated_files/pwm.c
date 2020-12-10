@@ -50,8 +50,8 @@ PTPER=533 for 15 KHz as pWM frequency
 */
 
 #include "pwm.h"
-#define High_Freq  421       /* for 19KHz PWM frequency*/      // 8MHz in both cases
-#define Low_Freq   533       /* for 15KHz PWM frequency*/
+#define High_Freq  842       /* for 19KHz PWM frequency*/      // 16MHz in both cases
+#define Low_Freq   1067       /* for 15KHz PWM frequency*/
 /**
   Section: Driver Interface
 */
@@ -122,12 +122,12 @@ void PWM_RBC_MODE (void)
     STPER = 0xFFF8;
     // SSEVTCMP 0; 
     SSEVTCMP = 0x00;
-    // PTPER 842;     // By using PLL, Fosc=16MHz
+    // PTPER 842;     // By using PLL, Fosc=16MHz,  PTPER = (Fosc)/((Fpwm)*(pwm input clock prescalar))= 16000000/(19000)*1 = 842
     PTPER = 0x34A;
     // SEVTCMP 0; 
     SEVTCMP = 0x00;
     // MDC 421; 
-    MDC = 0x1A5;
+   // MDC = 0x1A5;
     // CHOPCLK 0; CHPCLKEN disabled; 
     CHOP = 0x00;
     // MDCS Primary; FLTIEN disabled; CAM Edge Aligned; DTC Positive dead time for all Output modes; TRGIEN disabled; XPRES disabled; ITB Master; IUE disabled; CLIEN disabled; MTBS disabled; DTCP disabled; 
@@ -191,29 +191,29 @@ void PWM_RBC_MODE (void)
     // PHASE6 0; 
     PHASE6 = 0x00;
     // DTR1 0; 
-    DTR1 = 0x00;
+    DTR1 = 40;       // ALTDTRx, DTRx = FOSC * (Desired Dead Time)/(PWM Input Clock Prescaler)= 16000000*2.5us/1
     // DTR2 0; 
-    DTR2 = 0x00;
+    DTR2 = 40;
     // DTR3 0; 
-    DTR3 = 0x00;
+    DTR3 = 40;
     // DTR4 0; 
-    DTR4 = 0x00;
+    DTR4 = 40;
     // DTR5 0; 
-    DTR5 = 0x00;
+    DTR5 = 40;
     // DTR6 0; 
-    DTR6 = 0x00;
+    DTR6 = 40;
     // ALTDTR1 0; 
-    ALTDTR1 = 0x00;
+    ALTDTR1 = 40;
     // ALTDTR2 0; 
-    ALTDTR2 = 0x00;
+    ALTDTR2 = 40;
     // ALTDTR3 0; 
-    ALTDTR3 = 0x00;
+    ALTDTR3 = 40;
     // ALTDTR4 0; 
-    ALTDTR4 = 0x00;
+    ALTDTR4 = 40;
     // ALTDTR5 0; 
-    ALTDTR5 = 0x00;
+    ALTDTR5 = 40;
     // ALTDTR6 0; 
-    ALTDTR6 = 0x00;
+    ALTDTR6 = 40;
     // SDC1 0; 
     SDC1 = 0x00;
     // SDC2 0; 
@@ -317,12 +317,12 @@ void PWM_EBC_MODE (void)
     STPER = 0xFFF8;
     // SSEVTCMP 0; 
     SSEVTCMP = 0x00;
-    // PTPER 842; 
+    // PTPER 842;          // PTPER = (Fosc)/((Fpwm)*(pwm input clock prescalar))= 16000000/(19000)*1 = 842
     PTPER = 0x34A;
     // SEVTCMP 0; 
     SEVTCMP = 0x00;
     // MDC 421; 
-    MDC = 0x1A5;
+    //MDC = 0x1A5;
     // CHOPCLK 0; CHPCLKEN disabled; 
     CHOP = 0x00;
     // MDCS Master; FLTIEN disabled; CAM Edge Aligned; DTC Positive dead time for all Output modes; TRGIEN disabled; XPRES disabled; ITB Master; IUE disabled; CLIEN disabled; MTBS disabled; DTCP disabled; 
@@ -386,29 +386,29 @@ void PWM_EBC_MODE (void)
     // PHASE6 0; 
     PHASE6 = 0x00;
     // DTR1 0; 
-    DTR1 = 0x00;
+    DTR1 = 40;
     // DTR2 0; 
-    DTR2 = 0x00;
+    DTR2 = 40;
     // DTR3 0; 
-    DTR3 = 0x00;
+    DTR3 = 40;
     // DTR4 0; 
-    DTR4 = 0x00;
+    DTR4 = 40;
     // DTR5 0; 
-    DTR5 = 0x00;
+    DTR5 = 40;
     // DTR6 0; 
-    DTR6 = 0x00;
+    DTR6 = 40;
     // ALTDTR1 0; 
-    ALTDTR1 = 0x00;
+    ALTDTR1 = 40;
     // ALTDTR2 0; 
-    ALTDTR2 = 0x00;
+    ALTDTR2 = 40;
     // ALTDTR3 0; 
-    ALTDTR3 = 0x00;
+    ALTDTR3 = 40;
     // ALTDTR4 0; 
-    ALTDTR4 = 0x00;
+    ALTDTR4 = 40;
     // ALTDTR5 0; 
-    ALTDTR5 = 0x00;
+    ALTDTR5 = 40;
     // ALTDTR6 0; 
-    ALTDTR6 = 0x00;
+    ALTDTR6 = 40;
     // SDC1 0; 
     SDC1 = 0x00;
     // SDC2 0; 

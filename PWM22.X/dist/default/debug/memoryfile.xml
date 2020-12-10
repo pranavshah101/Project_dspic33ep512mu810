@@ -1,18 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <project>
-  <executable name="dist/default/production/PWM22.X.production.elf">
+  <executable name="dist/default/debug/PWM22.X.debug.elf">
     <memory name="data">
       <units>bytes</units>
       <length>53248</length>
-      <used>3428</used>
-      <free>49820</free>
+      <used>3508</used>
+      <free>49740</free>
     </memory>
     <memory name="program">
       <units>bytes</units>
       <length>524544</length>
-      <used>15600</used>
-      <free>508944</free>
+      <used>15558</used>
+      <free>508986</free>
     </memory>
   </executable>
 </project>

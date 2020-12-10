@@ -1293,7 +1293,7 @@
     </code>
 
 */
-#define M_RS_RL4_Toggle()           (_LATB12 ^= 1)
+#define RS_RL4_Toggle()           (_LATB12 ^= 1)
 /**
   @Summary
     Reads the value of the GPIO pin, RB12.
@@ -1319,7 +1319,7 @@
     </code>
 
 */
-#define M_RS_RL4_GetValue()         _RB12
+#define RS_RL4_GetValue()         _RB12
 /**
   @Summary
     Configures the GPIO pin, RB12, as an input.
@@ -1343,7 +1343,7 @@
     </code>
 
 */
-#define M_RS_RL4_SetDigitalInput()  (_TRISB12 = 1)
+#define RS_RL4_SetDigitalInput()  (_TRISB12 = 1)
 /**
   @Summary
     Configures the GPIO pin, RB12, as an output.
@@ -1367,7 +1367,7 @@
     </code>
 
 */
-#define M_RS_RL4_SetDigitalOutput() (_TRISB12 = 0)
+#define RS_RL4_SetDigitalOutput() (_TRISB12 = 0)
 /**
   @Summary
     Sets the GPIO pin, RB13, high using LATB13.
@@ -1439,7 +1439,7 @@
     </code>
 
 */
-#define M_RM_RL3_Toggle()           (_LATB13 ^= 1)
+#define RM_RL3_Toggle()           (_LATB13 ^= 1)
 /**
   @Summary
     Reads the value of the GPIO pin, RB13.
@@ -1465,7 +1465,7 @@
     </code>
 
 */
-#define M_RM_RL3_GetValue()         _RB13
+#define RM_RL3_GetValue()         _RB13
 /**
   @Summary
     Configures the GPIO pin, RB13, as an input.
@@ -1489,7 +1489,7 @@
     </code>
 
 */
-#define M_RM_RL3_SetDigitalInput()  (_TRISB13 = 1)
+#define RM_RL3_SetDigitalInput()  (_TRISB13 = 1)
 /**
   @Summary
     Configures the GPIO pin, RB13, as an output.
@@ -1513,7 +1513,7 @@
     </code>
 
 */
-#define M_RM_RL3_SetDigitalOutput() (_TRISB13 = 0)
+#define RM_RL3_SetDigitalOutput() (_TRISB13 = 0)
 /**
   @Summary
     Sets the GPIO pin, RB14, high using LATB14.
@@ -1585,7 +1585,7 @@
     </code>
 
 */
-#define M_ES_RL2_Toggle()           (_LATB14 ^= 1)
+#define ES_RL2_Toggle()           (_LATB14 ^= 1)
 /**
   @Summary
     Reads the value of the GPIO pin, RB14.
@@ -1611,7 +1611,7 @@
     </code>
 
 */
-#define M_ES_RL2_GetValue()         _RB14
+#define ES_RL2_GetValue()         _RB14
 /**
   @Summary
     Configures the GPIO pin, RB14, as an input.
@@ -1635,7 +1635,7 @@
     </code>
 
 */
-#define M_ES_RL2_SetDigitalInput()  (_TRISB14 = 1)
+#define ES_RL2_SetDigitalInput()  (_TRISB14 = 1)
 /**
   @Summary
     Configures the GPIO pin, RB14, as an output.
@@ -1659,7 +1659,7 @@
     </code>
 
 */
-#define M_ES_RL2_SetDigitalOutput() (_TRISB14 = 0)
+#define ES_RL2_SetDigitalOutput() (_TRISB14 = 0)
 /**
   @Summary
     Sets the GPIO pin, RB15, high using LATB15.
@@ -1731,7 +1731,7 @@
     </code>
 
 */
-#define M_EM_RL1_Toggle()           (_LATB15 ^= 1)
+#define EM_RL1_Toggle()           (_LATB15 ^= 1)
 /**
   @Summary
     Reads the value of the GPIO pin, RB15.
@@ -1757,7 +1757,7 @@
     </code>
 
 */
-#define M_EM_RL1_GetValue()         _RB15
+#define EM_RL1_GetValue()         _RB15
 /**
   @Summary
     Configures the GPIO pin, RB15, as an input.
@@ -1781,7 +1781,7 @@
     </code>
 
 */
-#define M_EM_RL1_SetDigitalInput()  (_TRISB15 = 1)
+#define EM_RL1_SetDigitalInput()  (_TRISB15 = 1)
 /**
   @Summary
     Configures the GPIO pin, RB15, as an output.
@@ -1805,7 +1805,7 @@
     </code>
 
 */
-#define M_EM_RL1_SetDigitalOutput() (_TRISB15 = 0)
+#define EM_RL1_SetDigitalOutput() (_TRISB15 = 0)
 /**
   @Summary
     Sets the GPIO pin, RD0, high using LATD0.

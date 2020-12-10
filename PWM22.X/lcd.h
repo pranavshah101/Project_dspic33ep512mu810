@@ -33,7 +33,7 @@ void LCD_Init()
     LCD_Command(0x06);  /*increment cursor (shift cursor to right)*/
   //  __delay_ms(5000);
     LCD_Command(0x01);  /*clear display screen*/
-    __delay_ms(500);  //5000
+    __delay_ms(20);  //5000
 }
 
 void LCD_Command(unsigned char cmd )
