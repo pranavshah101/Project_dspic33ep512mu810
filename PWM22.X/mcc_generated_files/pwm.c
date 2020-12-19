@@ -300,7 +300,7 @@ void PWM_RBC_MODE (void)
     AUXCON6 = 0x00;
 
     // SYNCOEN disabled; SEIEN disabled; SESTAT disabled; SEVTPS 1; SYNCSRC SYNCI1; SYNCEN disabled; PTSIDL disabled; PTEN enabled; EIPU disabled; SYNCPOL disabled; 
-    PTCON = 0x8000;
+    //PTCON = 0x8000;
 }
 
 
@@ -495,7 +495,7 @@ void PWM_EBC_MODE (void)
     AUXCON6 = 0x00;
 
     // SYNCOEN disabled; SEIEN disabled; SESTAT disabled; SEVTPS 1; SYNCSRC SYNCI1; SYNCEN disabled; PTSIDL disabled; PTEN enabled; EIPU disabled; SYNCPOL disabled; 
-    PTCON = 0x8000;
+    //PTCON = 0x8000;
 }
 
 void __attribute__ ((weak)) PWM_SpecialEvent_CallBack(void)

@@ -44,17 +44,18 @@
 
 // Configuration bits: selected in the GUI
 
+// FGS
 #pragma config GWRP = OFF    //General Segment Write-Protect bit->General Segment may be written
 #pragma config GSS = OFF    //General Segment Code-Protect bit->General Segment Code protect is disabled
 #pragma config GSSK = OFF    //General Segment Key bits->General Segment Write Protection and Code Protection is Disabled
 
 // FOSCSEL
-#pragma config FNOSC = FRC    //Initial Oscillator Source Selection Bits->Internal Fast RC (FRC) Oscillator with postscaler
+#pragma config FNOSC = FRC   //Initial Oscillator Source Selection Bits->Primary Oscillator (XT, HS, EC)
 #pragma config IESO = OFF    //Two-speed Oscillator Start-up Enable bit->Start up with user-selected oscillator source
 
 // FOSC
-#pragma config POSCMD =XT  //Primary Oscillator Mode Select bits->Primary Oscillator disabled
-#pragma config OSCIOFNC = OFF   //OSC2 Pin Function bit->OSC2 is clock output
+#pragma config POSCMD = XT    //Primary Oscillator Mode Select bits->XT Crystal Oscillator Mode
+#pragma config OSCIOFNC = OFF    //OSC2 Pin Function bit->OSC2 is general purpose digital I/O pin
 #pragma config IOL1WAY = ON    //Peripheral pin select configuration->Allow only one reconfiguration
 #pragma config FCKSM = CSECMD    //Clock Switching Mode bits->Both Clock switching and Fail-safe Clock Monitor are disabled
 
@@ -94,9 +95,12 @@ void SYSTEM_Initialize(void)
     PIN_MANAGER_Initialize();
     INTERRUPT_Initialize();
     CLOCK_Initialize();
-    LCD_Init();
+    //LCD_Init();
     TMR1_Initialize();
+    TMR3_Initialize();
+    
     INTERRUPT_GlobalEnable();
+    
     SYSTEM_CORCONModeOperatingSet(CORCON_MODE_PORVALUES);
 }
 
