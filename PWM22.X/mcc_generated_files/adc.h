@@ -16,8 +16,14 @@ int ain9Buff[SAMP_BUFF_SIZE];
 int ain10Buff[SAMP_BUFF_SIZE];
 int scanCounter = 0;
 int sampleCounter = 0;
-int var,var1,var2,var3=0,var4=0,var5=0,var8=0,var9=0,var10=0;  
-   
+int var,var1,var2,var3=0,var4=0,var5=0,var8=0,var9=0,var10=0;
+  
+   // int ADCValue[6] = {0, 0, 0, 0, 0, 0};
+    
+  
+    
+    
+    float voltage;
     unsigned long data[10];
     unsigned long data1[10];
     unsigned long data2[10];
