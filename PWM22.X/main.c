@@ -8,18 +8,26 @@
 #include "function.h"
 #define RBC_NO_Fault   1
 #define RBC_Fault      0
-#define EBC_NO_Fault   1
-#define EBC_Fault      0
+#define EBC_NO_Fault   0      
+#define EBC_Fault      1
 
 int phase_B[110],phase_Y[110],phase_R[110];
 int i;
 int voltage,voltage1,voltage2;
-int BAT_OP_DCV;
-
-
+int RBC_DCV,EBC_DCV,BAT_OP_DCV;
+int CT_1=0,CT_2,CT_3;
+float I_B,I_Total;
+float Total_Current,Battery_Current;
+int input_voltage=115;
+float res;
+unsigned char v[10];
+unsigned long output[10];
+unsigned long current[10];
+unsigned long DC[10];
+unsigned long current2[10];
 void My_Timer_ISR()
 {
-    init_ADC();                   // For single channel
+    init_ADC();                   
       
     for(i=0;i<110;i++)
     {
@@ -28,7 +36,12 @@ void My_Timer_ISR()
       phase_B[i]=ADC1BUF0;         //  B-AN0
       phase_Y[i]=ADC1BUF1;         //  Y-AN1
       phase_R[i]=ADC1BUF2;         //  R-AN2
-      BAT_OP_DCV=ADC1BUF5;
+      RBC_DCV=ADC1BUF3;            // RBC Capacitor voltage
+      EBC_DCV=ADC1BUF4;            // EBC Capacitor voltage
+      BAT_OP_DCV=ADC1BUF5;         // Output voltage
+      CT_3=ADC1BUF6;               // spare pin
+      CT_2=ADC1BUF7;               // Battery current
+      CT_1=ADC1BUF8;              // Total current
                            
        if(phase_B[i]>=phase_B[0])
        {
@@ -46,28 +59,17 @@ void My_Timer_ISR()
            phase_R[0]=phase_R[i];
        }
          
-      voltage  = (phase_B[0]-2361)/(float)(4.89);
-      voltage1 = (phase_Y[0]-2359)/(float)(4.53);
-      voltage2 = (phase_R[0]-2355)/(float)(4.52);
+      voltage  = (phase_B[0]-2001)/(float)(4.547);
+      voltage1 = (phase_Y[0]-2008)/(float)(4.487);
+      voltage2 = (phase_R[0]-2004)/(float)(4.57);
+      BAT_OP_DCV = (BAT_OP_DCV)*(0.041);
+      I_Total = (CT_2-2104)/(5.0571);
+       I_B = (CT_1-2125)/(5.114);            // Battery current
+      
                 
     }
-    
    
-      sprintf(data,"%d",voltage);        // Displaying phase B
-      strcat(data,"V=B");
-      LCD_String_xy(0,1,data);
-      
-      sprintf(data1,"%d",voltage1);        // Displaying phase Y
-      strcat(data1,"V=Y");
-      LCD_String_xy(0,9,data1);
-     
-      sprintf(data2,"%d",voltage2);        // Displaying phase R
-      strcat(data2,"V=R");
-      LCD_String_xy(2,5,data2);
-      
-      __delay_us(50);
-         
-     
+   
 }
     
          
@@ -75,40 +77,37 @@ int main(void)
 {
     
    SYSTEM_Initialize();
-   LCD_Init();  
+   LCD_Init(); 
+   LCD_String_xy(1,0,"INTRA INDUSTRIES ");
+   LCD_String_xy(2,0,"PVT LTD PUNE");
    
    TMR1_SetInterruptHandler(My_Timer_ISR);   
    TMR1_Start();
-   __delay_ms(200);
-   int p,j,k=10,l,n,m,a;
-   int flag_RBC=1,flag_EBC=1;
+   __delay_ms(500);
+   LCD_Command(0x01);
     
+   int p,j,k=8,l,n,m,a;
+   int flag_RBC=1,flag_EBC=1;
+   int flag=0;
    while(1)
    { 
     
     j=IO_RF5_GetValue();     // ENTER
     l=IO_RG13_GetValue();    // BACK
-    n=IO_RA6_GetValue();     // Switch for scrolling display //UP
-    p=IO_RA7_GetValue();     // Another switch for scrolling display//DOWN
+    n=IO_RA6_GetValue();     // UP
+    p=IO_RA7_GetValue();     // DOWN
     m=M_RBC_FLT_GetValue();  // RD6-RBC IGBT FAULT
-    a=M_EBC_FLT_GetValue();  // EBC IGBT FAULT
+    a=M_EBC_FLT_GetValue();  // RD7-EBC IGBT FAULT
     
-    
-      
-     
-      
-   
-        __delay_ms(100);
-     
-    
-
-    //For RBC MODE
-   // if((phase_Y[0]>3000) &&( phase_R[0]>3000 )&& (phase_B[0]>3000)) 
-      //PWM_Duty_Cycle_RBC(5);
-      if((voltage>170)&&(voltage1>170)&&(voltage2>170))
+    __delay_ms(100);
+  
+         /*RBC MODE*/
+    if((voltage>170)&&(voltage1>170)&&(voltage2>170))
     {
         IO_RA15_SetLow();
         PWM_EBC_Shut_Down();
+        
+        /*Power sequence for RBC*/
         if(flag_RBC==1)
         {
             ALL_RELAY_OFF(); 
@@ -124,38 +123,14 @@ int main(void)
       
       if(m==RBC_NO_Fault)                    // No fault detected
       {
-          
-      
-      if(j==0&&l==1)               // ENTER PRESSED FOR DECREMENT
-      {
-        k = k+1;                   // Increment by 5% 
-            if(k>=51)
-            {
-                k=50;
-            }
-            PWM_Duty_Cycle_RBC(k); 
-            __delay_us(200)
-    }
-     
-    else if(j==1&&l==0)               // BACK PRESSED FOR DECREMENT
-    {
-        
-        k = k-1;                      // Decrement by 5%
-            if(k<=10)
-            {
-                k=10;
-            }
-            PWM_Duty_Cycle_RBC(k); 
-            __delay_us(200)
-    }
-    
-    else if(j==1&l==1)             // Nothing is pressed 
-    {
-       // PWM_RBC_MODE();
-        PWM_Duty_Cycle_RBC(k);
-        //__delay_us(200);
-    }
+          PWM_Duty_Cycle_RBC(k);
       }
+              
+      
+     
+    
+   
+      
       else if(m==RBC_Fault)                 // Fault detected
       {
           PWM_RBC_Shut_Down();
@@ -165,72 +140,115 @@ int main(void)
     }
     
       /*EBC MODE*/
-  // else if((phase_B[0]>2350) || (phase_Y[0]>2350) || (phase_R[0]>2350 ))
+
    else 
    {
-       IO_RA15_SetHigh();        // SP_LED
+       IO_RA15_SetHigh();                   // SP_LED
        PWM_RBC_Shut_Down();
        
+       /*Power sequence for EBC*/
        if(flag_EBC==1)
        {
            ALL_RELAY_OFF();
-           
+           __delay_us(10);
            EBC_POWER_SEQ();
            flag_EBC=0;
-         
+           
        }
        
        PWM_EBC_MODE();
        
-       if(a==EBC_Fault)                   // No fault detected
+       if(a==EBC_NO_Fault)                   // No fault detected
       {
+             PWM_Duty_Cycle_EBC(k);
+       }
                
-      if(j==0&&l==1)               // ENTER PRESSED FOR INCREMENT
-    {
-        k = k+1;                   // Increment by 5% 
-            if(k>=51)
-            {
-                k=50;
-            }
-            PWM_Duty_Cycle_EBC(k); 
-            __delay_us(200)
-    }
      
-    else if(j==1&&l==0)              // BACK PRESSED FOR DECREMENT
-    {
-        
-        k = k-1;                      // Decrement by 5%
-            if(k<=10)
-            {
-                k=10;
-            }
-            PWM_Duty_Cycle_EBC(k); 
-            __delay_us(200)
-    }
     
-    else if(j==1&l==1)                 // Nothing is pressed 
-    {
-       // PWM_RBC_MODE();
-        PWM_Duty_Cycle_EBC(k);
-  
-        
-        
-    }
-      }
-      else if(a==EBC_NO_Fault)                    // Fault detected
+    
+   
+      
+      else if(a==EBC_Fault)                    // Fault detected
       {
           PWM_EBC_Shut_Down();
       }
-      
-      
-      flag_RBC=1;
+         
+       flag_RBC=1;
       
 }
-      
-       
+    if(l==0)         // BACK button is pressed
+    {
+        flag=flag+1;
+        if(flag>=2)
+        {
+            flag=0;
+        }
+    }
+    if(flag==1)
+    {
+        LCD_Command(0x01);
+        __delay_ms(50);
+        LCD_String_xy(1,0,"CT1:");
+        sprintf(current,"%.1f",I_B);
+        LCD_String_xy(1,5,current);
+        
+        LCD_String_xy(1,11,"DC:");
+        sprintf(DC,"%d",k);
+        LCD_String_xy(1,14,DC);
+        
+        LCD_String_xy(2,0,"CT2:");
+        sprintf(current2,"%.1f",I_Total);
+        LCD_String_xy(2,4,current2);
+        
+         __delay_ms(100);
+    }
+    if(flag==0)
+    {
+        
+     LCD_Command(0x01);
+     __delay_ms(10);    
+    LCD_String_xy(1,1,"Enter SP:");
+    sprintf(v,"%d",input_voltage);
+    LCD_String_xy(1,10,v);  
+    if(n==0 && p==1) //UP button is pressed
+    {
+        input_voltage++;
+    }
+    else if(n==1 && p==0) //dOWN BUTTON IS pressed
+    {
+        input_voltage--;
+    }
     
- 
-      
+    if(input_voltage>135)
+    {
+        input_voltage=135;
+    }
+    else if(input_voltage<110)
+    {
+        input_voltage=110;
+    }
+    res=(input_voltage/I_Total);
+    
+    if(j==0)                       // ENTER button is pressed
+    {
+        k=-0.57455*res+0.84689*(input_voltage)-63.84955;
+    } 
+        if(k>40)
+        {
+            k=40;
+        }
+        else if(k<8)
+        {
+            k=8;
+        }
+    
+    LCD_String_xy(2,1,"BAT_OP:");
+    sprintf(output,"%d",BAT_OP_DCV);
+    LCD_String_xy(2,9,output);
+    __delay_ms(100);
+     
+    }
+            
 }    
        
 }

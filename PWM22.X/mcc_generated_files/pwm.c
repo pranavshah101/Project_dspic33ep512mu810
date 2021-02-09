@@ -50,8 +50,8 @@ PTPER=533 for 15 KHz as pWM frequency
 */
 
 #include "pwm.h"
-#define High_Freq  842       /* for 19KHz PWM frequency*/      // 16MHz in both cases
-#define Low_Freq   1067       /* for 15KHz PWM frequency*/
+#define High_Freq  421       /* for 19KHz PWM frequency*/      // 16MHz in both cases
+#define Low_Freq   471       /* for 17KHz PWM frequency*/
 /**
   Section: Driver Interface
 */
@@ -122,8 +122,8 @@ void PWM_RBC_MODE (void)
     STPER = 0xFFF8;
     // SSEVTCMP 0; 
     SSEVTCMP = 0x00;
-    // PTPER 842;     // By using PLL, Fosc=16MHz,  PTPER = (Fosc)/((Fpwm)*(pwm input clock prescalar))= 16000000/(19000)*1 = 842
-    PTPER = 0x34A;
+    // PTPER 842;      // By using PLL, Fosc=16MHz,  PTPER = (Fosc)/((Fpwm)*(pwm input clock prescalar))= 16000000/(19000)*1 = 842
+    PTPER = 471;       // PUSH-PULL Mode
     // SEVTCMP 0; 
     SEVTCMP = 0x00;
     // MDC 421; 
@@ -142,18 +142,18 @@ void PWM_RBC_MODE (void)
     PWMCON5 = 0x100;
     // MDCS Master; FLTIEN disabled; CAM Edge Aligned; DTC Positive dead time for all Output modes; TRGIEN disabled; XPRES disabled; ITB Master; IUE disabled; CLIEN disabled; MTBS disabled; DTCP disabled; 
     PWMCON6 = 0x100;
-    //FLTDAT PWM1L Low, PWM1H Low; SWAP disabled; OVRENH disabled; PENL enabled; PMOD Complementary Output Mode; OVRENL disabled; OSYNC disabled; POLL disabled; PENH enabled; CLDAT PWM1L Low, PWM1H Low; OVRDAT PWM1L Low, PWM1H Low; POLH disabled; 
-    IOCON1 = 0xC000;
-    //FLTDAT PWM2L Low, PWM2H Low; SWAP disabled; OVRENH disabled; PENL enabled; PMOD Complementary Output Mode; OVRENL disabled; OSYNC disabled; POLL disabled; PENH enabled; CLDAT PWM2L Low, PWM2H Low; OVRDAT PWM2L Low, PWM2H Low; POLH disabled; 
-    IOCON2 = 0xC000;
-    //FLTDAT PWM3L Low, PWM3H Low; SWAP disabled; OVRENH disabled; PENL enabled; PMOD Complementary Output Mode; OVRENL disabled; OSYNC disabled; POLL disabled; PENH enabled; CLDAT PWM3L Low, PWM3H Low; OVRDAT PWM3L Low, PWM3H Low; POLH disabled; 
-    IOCON3 = 0xC000;
-    //FLTDAT PWM4L Low, PWM4H Low; SWAP disabled; OVRENH disabled; PENL enabled; PMOD Complementary Output Mode; OVRENL disabled; OSYNC disabled; POLL disabled; PENH enabled; CLDAT PWM4L Low, PWM4H Low; OVRDAT PWM4L Low, PWM4H Low; POLH disabled; 
-    IOCON4 = 0xC000;
-    //FLTDAT PWM5L Low, PWM5H Low; SWAP disabled; OVRENH disabled; PENL enabled; PMOD Complementary Output Mode; OVRENL disabled; OSYNC disabled; POLL disabled; PENH enabled; CLDAT PWM5L Low, PWM5H Low; OVRDAT PWM5L Low, PWM5H Low; POLH disabled; 
-    IOCON5 = 0xC000;
-    //FLTDAT PWM6L Low, PWM6H Low; SWAP disabled; OVRENH disabled; PENL enabled; PMOD Complementary Output Mode; OVRENL disabled; OSYNC disabled; POLL disabled; PENH enabled; CLDAT PWM6L Low, PWM6H Low; OVRDAT PWM6L Low, PWM6H Low; POLH disabled; 
-    IOCON6 = 0xC000;
+    //FLTDAT PWM1L Low, PWM1H Low; SWAP disabled; OVRENH disabled; PENL enabled; PUSH-PULL Output Mode; OVRENL disabled; OSYNC disabled; POLL disabled; PENH enabled; CLDAT PWM1L Low, PWM1H Low; OVRDAT PWM1L Low, PWM1H Low; POLH disabled; 
+    IOCON1 = 0xC800;
+    //FLTDAT PWM2L Low, PWM2H Low; SWAP disabled; OVRENH disabled; PENL enabled; PUSH-PULL Output Mode; OVRENL disabled; OSYNC disabled; POLL disabled; PENH enabled; CLDAT PWM2L Low, PWM2H Low; OVRDAT PWM2L Low, PWM2H Low; POLH disabled; 
+    IOCON2 = 0xC800;
+    //FLTDAT PWM3L Low, PWM3H Low; SWAP disabled; OVRENH disabled; PENL enabled; PUSH-PULL Output Mode; OVRENL disabled; OSYNC disabled; POLL disabled; PENH enabled; CLDAT PWM3L Low, PWM3H Low; OVRDAT PWM3L Low, PWM3H Low; POLH disabled; 
+    IOCON3 = 0xC800;
+    //FLTDAT PWM4L Low, PWM4H Low; SWAP disabled; OVRENH disabled; PENL enabled; PUSH-PULL Output Mode; OVRENL disabled; OSYNC disabled; POLL disabled; PENH enabled; CLDAT PWM4L Low, PWM4H Low; OVRDAT PWM4L Low, PWM4H Low; POLH disabled; 
+    IOCON4 = 0xC800;
+    //FLTDAT PWM5L Low, PWM5H Low; SWAP disabled; OVRENH disabled; PENL enabled; PUSH-PULL Output Mode; OVRENL disabled; OSYNC disabled; POLL disabled; PENH enabled; CLDAT PWM5L Low, PWM5H Low; OVRDAT PWM5L Low, PWM5H Low; POLH disabled; 
+    IOCON5 = 0xC800;
+    //FLTDAT PWM6L Low, PWM6H Low; SWAP disabled; OVRENH disabled; PENL enabled; PUSH-PULL Output Mode; OVRENL disabled; OSYNC disabled; POLL disabled; PENH enabled; CLDAT PWM6L Low, PWM6H Low; OVRDAT PWM6L Low, PWM6H Low; POLH disabled; 
+    IOCON6 = 0xC800;
     //FLTPOL disabled; CLPOL disabled; CLSRC FLT1; CLMOD disabled; FLTMOD PWM1H, PWM1L pins to FLTDAT values- Latched; IFLTMOD disabled; FLTSRC FLT1; 
     FCLCON1 = 0x00;
     //FLTPOL disabled; CLPOL disabled; CLSRC FLT1; CLMOD disabled; FLTMOD PWM2H, PWM2L pins to FLTDAT values- Latched; IFLTMOD disabled; FLTSRC FLT1; 
@@ -191,29 +191,29 @@ void PWM_RBC_MODE (void)
     // PHASE6 0; 
     PHASE6 = 0x00;
     // DTR1 0; 
-    DTR1 = 40;       // ALTDTRx, DTRx = FOSC * (Desired Dead Time)/(PWM Input Clock Prescaler)= 16000000*2.5us/1
+    DTR1 = 0;       
     // DTR2 0; 
-    DTR2 = 40;
+    DTR2 = 0;
     // DTR3 0; 
-    DTR3 = 40;
+    DTR3 = 0;
     // DTR4 0; 
-    DTR4 = 40;
+    DTR4 = 0;
     // DTR5 0; 
-    DTR5 = 40;
+    DTR5 = 0;
     // DTR6 0; 
-    DTR6 = 40;
+    DTR6 = 0;
     // ALTDTR1 0; 
-    ALTDTR1 = 40;
+    ALTDTR1 = 0;
     // ALTDTR2 0; 
-    ALTDTR2 = 40;
+    ALTDTR2 = 0;
     // ALTDTR3 0; 
-    ALTDTR3 = 40;
+    ALTDTR3 = 0;
     // ALTDTR4 0; 
-    ALTDTR4 = 40;
+    ALTDTR4 = 0;
     // ALTDTR5 0; 
-    ALTDTR5 = 40;
+    ALTDTR5 = 0;
     // ALTDTR6 0; 
-    ALTDTR6 = 40;
+    ALTDTR6 = 0;
     // SDC1 0; 
     SDC1 = 0x00;
     // SDC2 0; 
@@ -300,7 +300,7 @@ void PWM_RBC_MODE (void)
     AUXCON6 = 0x00;
 
     // SYNCOEN disabled; SEIEN disabled; SESTAT disabled; SEVTPS 1; SYNCSRC SYNCI1; SYNCEN disabled; PTSIDL disabled; PTEN enabled; EIPU disabled; SYNCPOL disabled; 
-    //PTCON = 0x8000;
+    PTCON = 0x0000;
 }
 
 
@@ -318,7 +318,7 @@ void PWM_EBC_MODE (void)
     // SSEVTCMP 0; 
     SSEVTCMP = 0x00;
     // PTPER 842;          // PTPER = (Fosc)/((Fpwm)*(pwm input clock prescalar))= 16000000/(19000)*1 = 842
-    PTPER = 0x34A;
+    PTPER = 471;           // PUSH-PULL Mode
     // SEVTCMP 0; 
     SEVTCMP = 0x00;
     // MDC 421; 
@@ -338,17 +338,17 @@ void PWM_EBC_MODE (void)
     // MDCS Primary; FLTIEN disabled; CAM Edge Aligned; DTC Positive dead time for all Output modes; TRGIEN disabled; XPRES disabled; ITB Master; IUE disabled; CLIEN disabled; MTBS disabled; DTCP disabled; 
     PWMCON6 = 0x00;
     //FLTDAT PWM1L Low, PWM1H Low; SWAP disabled; OVRENH disabled; PENL enabled; PMOD Complementary Output Mode; OVRENL disabled; OSYNC disabled; POLL disabled; PENH enabled; CLDAT PWM1L Low, PWM1H Low; OVRDAT PWM1L Low, PWM1H Low; POLH disabled; 
-    IOCON1 = 0xC000;
+    IOCON1 = 0xC800;
     //FLTDAT PWM2L Low, PWM2H Low; SWAP disabled; OVRENH disabled; PENL enabled; PMOD Complementary Output Mode; OVRENL disabled; OSYNC disabled; POLL disabled; PENH enabled; CLDAT PWM2L Low, PWM2H Low; OVRDAT PWM2L Low, PWM2H Low; POLH disabled; 
-    IOCON2 = 0xC000;
+    IOCON2 = 0xC800;
     //FLTDAT PWM3L Low, PWM3H Low; SWAP disabled; OVRENH disabled; PENL enabled; PMOD Complementary Output Mode; OVRENL disabled; OSYNC disabled; POLL disabled; PENH enabled; CLDAT PWM3L Low, PWM3H Low; OVRDAT PWM3L Low, PWM3H Low; POLH disabled; 
-    IOCON3 = 0xC000;
+    IOCON3 = 0xC800;
     //FLTDAT PWM4L Low, PWM4H Low; SWAP disabled; OVRENH disabled; PENL enabled; PMOD Complementary Output Mode; OVRENL disabled; OSYNC disabled; POLL disabled; PENH enabled; CLDAT PWM4L Low, PWM4H Low; OVRDAT PWM4L Low, PWM4H Low; POLH disabled; 
-    IOCON4 = 0xC000;
+    IOCON4 = 0xC800;
     //FLTDAT PWM5L Low, PWM5H Low; SWAP disabled; OVRENH disabled; PENL enabled; PMOD Complementary Output Mode; OVRENL disabled; OSYNC disabled; POLL disabled; PENH enabled; CLDAT PWM5L Low, PWM5H Low; OVRDAT PWM5L Low, PWM5H Low; POLH disabled; 
-    IOCON5 = 0xC000;
+    IOCON5 = 0xC800;
     //FLTDAT PWM6L Low, PWM6H Low; SWAP disabled; OVRENH disabled; PENL enabled; PMOD Complementary Output Mode; OVRENL disabled; OSYNC disabled; POLL disabled; PENH enabled; CLDAT PWM6L Low, PWM6H Low; OVRDAT PWM6L Low, PWM6H Low; POLH disabled; 
-    IOCON6 = 0xC000;
+    IOCON6 = 0xC800;
     //FLTPOL disabled; CLPOL disabled; CLSRC FLT1; CLMOD disabled; FLTMOD PWM1H, PWM1L pins to FLTDAT values- Latched; IFLTMOD disabled; FLTSRC FLT1; 
     FCLCON1 = 0x00;
     //FLTPOL disabled; CLPOL disabled; CLSRC FLT1; CLMOD disabled; FLTMOD PWM2H, PWM2L pins to FLTDAT values- Latched; IFLTMOD disabled; FLTSRC FLT1; 
@@ -386,29 +386,29 @@ void PWM_EBC_MODE (void)
     // PHASE6 0; 
     PHASE6 = 0x00;
     // DTR1 0; 
-    DTR1 = 40;
+    DTR1 = 0;
     // DTR2 0; 
-    DTR2 = 40;
+    DTR2 = 0;
     // DTR3 0; 
-    DTR3 = 40;
+    DTR3 = 0;
     // DTR4 0; 
-    DTR4 = 40;
+    DTR4 = 0;
     // DTR5 0; 
-    DTR5 = 40;
+    DTR5 = 0;
     // DTR6 0; 
-    DTR6 = 40;
+    DTR6 = 0;
     // ALTDTR1 0; 
-    ALTDTR1 = 40;
+    ALTDTR1 = 0;
     // ALTDTR2 0; 
-    ALTDTR2 = 40;
+    ALTDTR2 = 0;
     // ALTDTR3 0; 
-    ALTDTR3 = 40;
+    ALTDTR3 = 0;
     // ALTDTR4 0; 
-    ALTDTR4 = 40;
+    ALTDTR4 = 0;
     // ALTDTR5 0; 
-    ALTDTR5 = 40;
+    ALTDTR5 = 0;
     // ALTDTR6 0; 
-    ALTDTR6 = 40;
+    ALTDTR6 = 0;
     // SDC1 0; 
     SDC1 = 0x00;
     // SDC2 0; 
@@ -495,7 +495,7 @@ void PWM_EBC_MODE (void)
     AUXCON6 = 0x00;
 
     // SYNCOEN disabled; SEIEN disabled; SESTAT disabled; SEVTPS 1; SYNCSRC SYNCI1; SYNCEN disabled; PTSIDL disabled; PTEN enabled; EIPU disabled; SYNCPOL disabled; 
-    //PTCON = 0x8000;
+    //PTCON = 0x0000;
 }
 
 void __attribute__ ((weak)) PWM_SpecialEvent_CallBack(void)
@@ -620,32 +620,30 @@ void PWM_Generator6_Tasks ( void )
 void PWM_Duty_Cycle_RBC(unsigned int i)
 {
    PWM_RBC_MODE();
-   PTCON=0x8000;
-    MDC=8.42*i;
-   //MDC=8.42*i;
-  // MDC=42;
+   PTCON = 0x8000;
+   MDC   = 9.42*i;      // PUSH-PULL Mode(For getting 10% duty cycle in DSO of 17KHz freq,we have to put value of 20% of PTPER in this register)
+   
     
 }
 
 void PWM_RBC_Shut_Down()
 {
     PWM_RBC_MODE();
-    PTCON=0x0000;
+    PTCON = 0x0000;
     
 }
 void PWM_Duty_Cycle_EBC(unsigned int i)
 {
    PWM_EBC_MODE();
-   PTCON=0x8000;
-    MDC=8.42*i;
-   //MDC=8.42*i;
-  // MDC=42;
+   PTCON = 0x8000;
+   MDC   = 9.42*i;    // PUSH-PULL Mode(For getting 10% duty cycle in DSO of 17KHz freq,we have to put value of 20% of PTPER in this register)
+   
     
 }
 
 void PWM_EBC_Shut_Down()
 {
     PWM_EBC_MODE();
-    PTCON=0x0000;
+    PTCON = 0x0000;
     
 }

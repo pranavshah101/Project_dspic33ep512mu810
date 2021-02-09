@@ -98,6 +98,7 @@ void SYSTEM_Initialize(void)
     TMR1_Initialize();
     INTERRUPT_GlobalEnable();
     SYSTEM_CORCONModeOperatingSet(CORCON_MODE_PORVALUES);
+    //PWM_RBC_MODE();       // To make EBC PWM off when RBC mode is ON, for that in PWM_EBC_MODE, PTCON=0x0000;
 }
 
 /**
