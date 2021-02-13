@@ -97,6 +97,13 @@ int main(void)
    int flag=0;
    while(1)
    { 
+   
+    /*IO_RA4_SetHigh();   //Both earth leakage
+    IO_RA5_SetHigh();  //Negative earth leakage
+    IO_RA2_SetHigh();    //Emergency led
+   
+    IO_RA14_SetHigh();   //positive earth leakage*/
+   // IO_RA15_SetHigh();    //SP Led
     
     j=IO_RF5_GetValue();     // ENTER
     l=IO_RG13_GetValue();    // BACK
@@ -133,7 +140,10 @@ int main(void)
     }
     if((voltage>170)&&(voltage1>170)&&(voltage2>170))
     {
-        IO_RA15_SetLow();
+        IO_RA15_SetLow();    //SP LED LOW
+          //Charging led 
+        //IO_RA3_SetHigh();   //Battery not healthy
+        
         PWM_EBC_Shut_Down();
         
         /*Power sequence for RBC*/
@@ -146,14 +156,17 @@ int main(void)
             
            
         }
+        
+        
          
-            
+       IO_RD8_SetHigh();     
       PWM_RBC_MODE();
       
       if(m==RBC_NO_Fault)                    // No fault detected
       {
           if((R_Y>=480)||(Y_B>=480)||(B_R>=480))                  // Fault detected
       {
+           
           PWM_RBC_Shut_Down();
       }
           else if((R_Y<=300)||(Y_B<=300)||(B_R<=300))
@@ -209,10 +222,10 @@ int main(void)
     
       }
       
-     /* else if((m==RBC_Fault)||(R_Y>=400))                  // Fault detected
+      else if(m==RBC_Fault)                 // Fault detected
       {
           PWM_RBC_Shut_Down();
-      }*/
+      }
       
       
              
@@ -224,7 +237,8 @@ int main(void)
    else 
    {
        
-       IO_RA15_SetHigh();                   // SP_LED
+                       
+       
        PWM_RBC_Shut_Down();
        
        /*Power sequence for EBC*/
@@ -236,7 +250,8 @@ int main(void)
            flag_EBC=0;
            
        }
-       
+       IO_RA15_SetHigh();    // SP_LED
+       IO_RD8_SetLow();     
        PWM_EBC_MODE();
        
        
@@ -245,15 +260,17 @@ int main(void)
       {
            
             if((R_Y>=480)||(Y_B>=480)||(B_R>=480))                  // Fault detected
-      {
-          PWM_EBC_Shut_Down();
-      }
-          else if((R_Y<=300)||(Y_B<=300)||(B_R<=300))
-          {
+             {
               PWM_EBC_Shut_Down();
-          }
+             }
+            
+          /* else if((R_Y<=300)||(Y_B<=300)||(B_R<=300))
+            {
+              PWM_EBC_Shut_Down();
+            }*/
+            
            else if(EBC_SP>OP_Voltage)
-       {
+           {
            k=k+1;
            flag_reached_EBC=1;
            s=k;

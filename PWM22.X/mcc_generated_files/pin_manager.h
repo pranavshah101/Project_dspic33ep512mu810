@@ -798,7 +798,7 @@
     None.
 
   @Param
-    None.
+    None
 
   @Example
     <code>
