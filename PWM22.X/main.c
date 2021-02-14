@@ -6,8 +6,8 @@
 #include <libpic30.h>
 #include "lcd.h"
 #include "function.h"
-#define RBC_NO_Fault   1
-#define RBC_Fault      0
+#define RBC_NO_Fault   0
+#define RBC_Fault      1
 #define EBC_NO_Fault   0      
 #define EBC_Fault      1
 
@@ -67,7 +67,7 @@ void My_Timer_ISR()
       voltage2 = (phase_R[0]-2005)/(float)(5.4297);
       OP_Voltage = (OP_Voltage)*(0.041);
       I_Total = (CT_2-2104)/(5.0571);
-       I_B = (CT_1-2125)/(5.114);            // Battery current
+       I_B = ((CT_1-2125)/(5.114))+2;            // Battery current
        R_Y=voltage+voltage1;
        Y_B=voltage1+voltage2;
        B_R=voltage2+voltage;
@@ -92,7 +92,7 @@ int main(void)
    __delay_ms(500);
    LCD_Command(0x01);
     
-   int p,j,k=8,l,n,m,a;
+   int p,j,k=8,l,n,m,a,x,y;
    int flag_RBC=1,flag_EBC=1,flag_reached_RBC=0,flag_reached_EBC=0,s=8;
    int flag=0;
    while(1)
@@ -101,7 +101,7 @@ int main(void)
     /*IO_RA4_SetHigh();   //Both earth leakage
     IO_RA5_SetHigh();  //Negative earth leakage
     IO_RA2_SetHigh();    //Emergency led
-   
+     IO_RD8_SetHigh();   // Charging on led
     IO_RA14_SetHigh();   //positive earth leakage*/
    // IO_RA15_SetHigh();    //SP Led
     
@@ -111,6 +111,8 @@ int main(void)
     p=IO_RA7_GetValue();     // DOWN
     m=M_RBC_FLT_GetValue();  // RD6-RBC IGBT FAULT
     a=M_EBC_FLT_GetValue();  // RD7-EBC IGBT FAULT
+    x=IO_RD4_GetValue();
+    y=IO_RD5_GetValue();
     
     __delay_ms(100);
     
@@ -138,8 +140,10 @@ int main(void)
     {
         RBC_Enter_SP=RBC_SP;
     }
+    
     if((voltage>170)&&(voltage1>170)&&(voltage2>170))
     {
+        k=30;
         IO_RA15_SetLow();    //SP LED LOW
           //Charging led 
         //IO_RA3_SetHigh();   //Battery not healthy
@@ -164,27 +168,35 @@ int main(void)
       
       if(m==RBC_NO_Fault)                    // No fault detected
       {
-          if((R_Y>=480)||(Y_B>=480)||(B_R>=480))                  // Fault detected
+          if((R_Y>=520)||(Y_B>=520)||(B_R>=520))                  // Fault detected
       {
            
           PWM_RBC_Shut_Down();
       }
+          
+           
+          
           else if((R_Y<=300)||(Y_B<=300)||(B_R<=300))
           {
               PWM_RBC_Shut_Down();
           }
       
+          else if(I_Total>=30)
+          {
+              PWM_RBC_Shut_Down();
+             // RM_RL3_OFF();
+          }
           else if(RBC_Enter_SP>OP_Voltage)
           {
-              k=k+1;
+              k=k+0.5;
                                      
-              if(k>40)
+              if(k>45)
               {
-                  k=40;
+                  k=45;
               }
-              else if(k<8)
+              else if(k<30)
               {
-                  k=8;
+                  k=30;
               }
               
               PWM_Duty_Cycle_RBC(k);
@@ -194,27 +206,27 @@ int main(void)
                   
           else if(RBC_Enter_SP<OP_Voltage)
           {
-              k=k-1;
-              if(k>40)
+              k=k-0.5;
+              if(k>45)
               {
-                  k=40;
+                  k=45;
               }
-              else if(k<8)
+              else if(k<30)
               {
-                  k=8;
+                  k=30;
               }
               PWM_Duty_Cycle_RBC(k);
           }
           
           else if(RBC_Enter_SP==OP_Voltage)
           {
-               if(k>40)
+               if(k>45)
               {
-                  k=40;
+                  k=45;
               }
-              else if(k<8)
+              else if(k<30)
               {
-                  k=8;
+                  k=30;
               }
               PWM_Duty_Cycle_RBC(k);
           }
@@ -222,11 +234,36 @@ int main(void)
     
       }
       
+      
+      
       else if(m==RBC_Fault)                 // Fault detected
       {
           PWM_RBC_Shut_Down();
       }
       
+       else if(x==1)
+          {
+              IO_RA14_SetHigh();
+              
+          }
+          else if(y==1)
+          {
+              IO_RA5_SetHigh();
+          }
+          else if(x==0)
+          {
+              IO_RA14_SetLow();
+          }
+          else if(y==0)
+          {
+              IO_RA5_SetLow();
+          }
+          
+          else if(x==0 && y==0)
+          {
+              IO_RA14_SetHigh();
+              IO_RA5_SetHigh();
+          }
       
              
       flag_EBC=1;
@@ -237,7 +274,7 @@ int main(void)
    else 
    {
        
-                       
+         k=7;              
        
        PWM_RBC_Shut_Down();
        
@@ -268,6 +305,14 @@ int main(void)
             {
               PWM_EBC_Shut_Down();
             }*/
+            else if(I_Total>=15)
+            {
+                PWM_EBC_Shut_Down();
+               // EM_RL1_OFF();
+               
+            }
+         
+          
             
            else if(EBC_SP>OP_Voltage)
            {
@@ -278,9 +323,9 @@ int main(void)
               {
                   k=40;
               }
-              else if(k<8)
+              else if(k<7)
               {
-                  k=8;
+                  k=7;
               }
               if(flag_reached_EBC==1)
               {
@@ -295,9 +340,9 @@ int main(void)
               {
                   k=40;
               }
-              else if(k<8)
+              else if(k<7)
               {
-                  k=8;
+                  k=7;
               }
               PWM_Duty_Cycle_EBC(k);
           }
@@ -308,15 +353,36 @@ int main(void)
               {
                   k=40;
               }
-              else if(k<8)
+              else if(k<7)
               {
-                  k=8;
+                  k=7;
               }
               PWM_Duty_Cycle_EBC(k);
           }
        
        }
+            else if(x==1)
+          {
+              IO_RA14_SetHigh();
+          }   
+            else if(x==0)
+            {
+                IO_RA14_SetLow();
                
+            }
+            else if(y==1)
+            {
+                IO_RA5_SetHigh();
+            }
+            else if(y==0)
+            {
+                IO_RA5_SetLow();
+            }
+            else if(x==1 && y==1)
+            {
+                IO_RA5_SetHigh();
+                IO_RA14_SetHigh();
+            }
                         
       
       else if(a==EBC_Fault)                    // Fault detected
@@ -324,6 +390,24 @@ int main(void)
           PWM_EBC_Shut_Down();
       }
          
+        
+        /*  else if(y==0)
+          {
+              IO_RA5_SetHigh();
+          }
+          else if(x==1)
+          {
+              IO_RA14_SetLow();
+          }
+          else if(y==1)
+          {
+              IO_RA5_SetLow();
+          }
+            else if(x==0 && y==0)
+          {
+              IO_RA14_SetHigh();
+              IO_RA5_SetHigh();
+            }*/
        flag_RBC=1;
       
 }

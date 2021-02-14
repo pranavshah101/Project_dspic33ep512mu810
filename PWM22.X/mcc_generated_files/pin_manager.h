@@ -78,6 +78,8 @@
 
 */
 #define IO_RA14_SetHigh()          (_LATA14 = 1)
+#define IO_RD4_GetValue()         _RD4
+#define IO_RD5_GetValue()         _RD5
 /**
   @Summary
     Sets the GPIO pin, RA14, low using LATA14.

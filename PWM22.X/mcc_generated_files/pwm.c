@@ -617,7 +617,7 @@ void PWM_Generator6_Tasks ( void )
 	}
 }
 
-void PWM_Duty_Cycle_RBC(unsigned int i)
+void PWM_Duty_Cycle_RBC(float i)
 {
    PWM_RBC_MODE();
    PTCON = 0x8000;
@@ -632,7 +632,7 @@ void PWM_RBC_Shut_Down()
     PTCON = 0x0000;
     
 }
-void PWM_Duty_Cycle_EBC(unsigned int i)
+void PWM_Duty_Cycle_EBC(float i)
 {
    PWM_EBC_MODE();
    PTCON = 0x8000;
