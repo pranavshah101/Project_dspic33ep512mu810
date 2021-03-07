@@ -6,9 +6,12 @@
 
 void LCD_Init()
 {
-    TRISD = 0xFFF0;       /*PORT as Output Port*/
-    TRISGbits.TRISG0=0;
-    TRISGbits.TRISG1=0;
+      TRISDbits.TRISD0=0;
+      TRISDbits.TRISD1=0;
+      TRISDbits.TRISD2=0;
+      TRISDbits.TRISD3=0;      /*PORT as Output Port*/
+     TRISGbits.TRISG0=0;
+     TRISGbits.TRISG1=0;
     //__delay_ms(1000);       /*15ms,16x2 LCD Power on delay*/
     
     LCD_Command(0x03);
@@ -43,7 +46,7 @@ RS = 0;           /*Command Register is selected i.e.RS=0*/
 EN = 1;           /*High-to-low pulse on Enable pin to latch data*/
 __delay_us(200);
 EN = 0;
-    LATD = (cmd &0x0f); /*Send lower nibble of command to PORT */
+ LATD = (cmd &0x0F); /*Send lower nibble of command to PORT */
 EN = 1;
 __delay_us(200);
 EN = 0;

@@ -50,6 +50,7 @@ PTPER=533 for 15 KHz as pWM frequency
 */
 
 #include "pwm.h"
+#include "pin_manager.h"
 #define High_Freq  421       /* for 19KHz PWM frequency*/      // 16MHz in both cases
 #define Low_Freq   471       /* for 17KHz PWM frequency*/
 /**
@@ -622,6 +623,9 @@ void PWM_Duty_Cycle_RBC(float i)
    PWM_RBC_MODE();
    PTCON = 0x8000;
    MDC   = 9.42*i;      // PUSH-PULL Mode(For getting 10% duty cycle in DSO of 17KHz freq,we have to put value of 20% of PTPER in this register)
+   //IO_RD8_SetHigh();//Charging Led
+   //LATDbits.LATD8=1;
+
    
     
 }
@@ -630,6 +634,9 @@ void PWM_RBC_Shut_Down()
 {
     PWM_RBC_MODE();
     PTCON = 0x0000;
+    //IO_RD8_SetLow();//Charging Led
+      //LATDbits.LATD8=0;
+
     
 }
 void PWM_Duty_Cycle_EBC(float i)
