@@ -199,11 +199,11 @@ section                    address   length (PC units)   length (bytes) (dec)
 .const                      0x1d68               0x118           0x1a4  (420)
 .text                       0x1e80              0x16c8          0x222c  (8748)
 .dinit                      0x3548                0xbc           0x11a  (282)
-.text                       0x3604               0x1ac           0x282  (642)
-.init.delay32               0x37b0                0x1c            0x2a  (42)
-.text                       0x37cc                0x28            0x3c  (60)
+.text                       0x3604               0x1b4           0x28e  (654)
+.init.delay32               0x37b8                0x1c            0x2a  (42)
+.text                       0x37d4                0x28            0x3c  (60)
 
-                 Total "program" memory used (bytes):         0x50ee  (20718) 3%
+                 Total "program" memory used (bytes):         0x50fa  (20730) 3%
 
 
 Auxflash Memory  [Origin = 0x7fc000, Length = 0x3ffa]
@@ -512,9 +512,9 @@ External Symbols in Program Memory (by address):
                   0x0036b0                  _TMR1_SoftwareCounterClear
                   0x0036bc                  _PIN_MANAGER_Initialize
                   0x003728                  _CLOCK_Initialize
-                  0x00379a                  _SYSTEM_Initialize
-                  0x0037b0                  ___delay32
-                  0x0037e4                  _INTERRUPT_Initialize
+                  0x0037a2                  _SYSTEM_Initialize
+                  0x0037b8                  ___delay32
+                  0x0037ec                  _INTERRUPT_Initialize
                   0xf80004                  __FGS.sec
 
 External Symbols in Program Memory (by name):
@@ -522,7 +522,7 @@ External Symbols in Program Memory (by name):
                   0x001fd4                  _ALL_RELAY_OFF
                   0x003728                  _CLOCK_Initialize
                   0x001fe2                  _EBC_POWER_SEQ
-                  0x0037e4                  _INTERRUPT_Initialize
+                  0x0037ec                  _INTERRUPT_Initialize
                   0x001f08                  _LCD_Char
                   0x001f86                  _LCD_Clear
                   0x001eda                  _LCD_Command
@@ -548,7 +548,7 @@ External Symbols in Program Memory (by name):
                   0x001fc2                  _RBC_POWER_SEQ
                   0x003540                  _RESET_CauseClearAll
                   0x003434                  _RESET_GetCause
-                  0x00379a                  _SYSTEM_Initialize
+                  0x0037a2                  _SYSTEM_Initialize
                   0x003654                  _TMR1_Counter16BitGet
                   0x003642                  _TMR1_Counter16BitSet
                   0x00368c                  _TMR1_GetElapsedThenClear
@@ -581,7 +581,7 @@ External Symbols in Program Memory (by name):
                   0x000af2                  ___Putfld_cdfFnopuxX
                   0x001b14                  ___adddf3
                   0x00043a                  ___addsf3
-                  0x0037b0                  ___delay32
+                  0x0037b8                  ___delay32
                   0x0015f0                  ___divdf3
                   0x001a56                  ___divdi3
                   0x0004f4                  ___divsf3
@@ -902,7 +902,7 @@ usercode
 
 __FGS             0xf80004          0x2
  *(__FGS.sec*)
- __FGS.sec        0xf80004          0x2 /CW/_FGS
+ __FGS.sec        0xf80004          0x2 /CW/_FGSÀø“
                   0xf80004                  __FGS.sec
 
 __FOSCSEL
@@ -929,17 +929,17 @@ __FUID0
 .comment
  *(.comment)
 
-.debug_info       0x000000       0xf6e9
+.debug_info       0x000000       0xf9bb
  *(.debug_info)
- .debug_info      0x000000        0x65c build/default/production/mcc_generated_files/pin_manager.o
- .debug_info      0x00065c        0x602 build/default/production/mcc_generated_files/traps.o
- .debug_info      0x000c5e       0x37a7 build/default/production/mcc_generated_files/system.o
- .debug_info      0x004405        0x34b build/default/production/mcc_generated_files/interrupt_manager.o
- .debug_info      0x004750       0x3e4b build/default/production/mcc_generated_files/pwm.o
- .debug_info      0x00859b        0x562 build/default/production/mcc_generated_files/clock.o
- .debug_info      0x008afd        0x4ab build/default/production/mcc_generated_files/reset.o
- .debug_info      0x008fa8        0x8db build/default/production/mcc_generated_files/tmr1.o
- .debug_info      0x009883       0x5e66 build/default/production/main.o
+ .debug_info      0x000000        0x670 build/default/production/mcc_generated_files/pin_manager.o
+ .debug_info      0x000670        0x616 build/default/production/mcc_generated_files/traps.o
+ .debug_info      0x000c86       0x37bb build/default/production/mcc_generated_files/system.o
+ .debug_info      0x004441        0x35f build/default/production/mcc_generated_files/interrupt_manager.o
+ .debug_info      0x0047a0       0x3e5f build/default/production/mcc_generated_files/pwm.o
+ .debug_info      0x0085ff        0x794 build/default/production/mcc_generated_files/clock.o
+ .debug_info      0x008d93        0x4bf build/default/production/mcc_generated_files/reset.o
+ .debug_info      0x009252        0x8ef build/default/production/mcc_generated_files/tmr1.o
+ .debug_info      0x009b41       0x5e7a build/default/production/main.o
  *(.gnu.linkonce.wi.*)
 
 .debug_abbrev     0x000000        0xa34
@@ -955,18 +955,18 @@ __FUID0
  .debug_abbrev    0x000663        0x18d build/default/production/mcc_generated_files/tmr1.o
  .debug_abbrev    0x0007f0        0x244 build/default/production/main.o
 
-.debug_line       0x000000       0x1032
+.debug_line       0x000000       0x1037
  *(.debug_line)
  .debug_line      0x000000        0x157 build/default/production/mcc_generated_files/pin_manager.o
  .debug_line      0x000157        0x16e build/default/production/mcc_generated_files/traps.o
  .debug_line      0x0002c5        0x177 build/default/production/mcc_generated_files/system.o
  .debug_line      0x00043c        0x138 build/default/production/mcc_generated_files/interrupt_manager.o
  .debug_line      0x000574        0x228 build/default/production/mcc_generated_files/pwm.o
- .debug_line      0x00079c        0x133 build/default/production/mcc_generated_files/clock.o
- .debug_line      0x0008cf         0x1a build/default/production/mcc_generated_files/mcc.o
- .debug_line      0x0008e9        0x177 build/default/production/mcc_generated_files/reset.o
- .debug_line      0x000a60        0x175 build/default/production/mcc_generated_files/tmr1.o
- .debug_line      0x000bd5        0x45d build/default/production/main.o
+ .debug_line      0x00079c        0x138 build/default/production/mcc_generated_files/clock.o
+ .debug_line      0x0008d4         0x1a build/default/production/mcc_generated_files/mcc.o
+ .debug_line      0x0008ee        0x177 build/default/production/mcc_generated_files/reset.o
+ .debug_line      0x000a65        0x175 build/default/production/mcc_generated_files/tmr1.o
+ .debug_line      0x000bda        0x45d build/default/production/main.o
 
 .debug_frame      0x000000        0xa38
  *(.debug_frame)
@@ -980,16 +980,16 @@ __FUID0
  .debug_frame     0x00061a        0x18a build/default/production/mcc_generated_files/tmr1.o
  .debug_frame     0x0007a4        0x294 build/default/production/main.o
 
-.debug_str        0x000000        0xbeb
+.debug_str        0x000000        0xc0a
  *(.debug_str)
  .debug_str       0x000000         0x24 build/default/production/mcc_generated_files/traps.o
  .debug_str       0x000024        0x304 build/default/production/mcc_generated_files/system.o
  .debug_str       0x000328          0x9 build/default/production/mcc_generated_files/interrupt_manager.o
  .debug_str       0x000331        0x301 build/default/production/mcc_generated_files/pwm.o
- .debug_str       0x000632         0x16 build/default/production/mcc_generated_files/clock.o
- .debug_str       0x000648         0x17 build/default/production/mcc_generated_files/reset.o
- .debug_str       0x00065f         0x32 build/default/production/mcc_generated_files/tmr1.o
- .debug_str       0x000691        0x55a build/default/production/main.o
+ .debug_str       0x000632         0x35 build/default/production/mcc_generated_files/clock.o
+ .debug_str       0x000667         0x17 build/default/production/mcc_generated_files/reset.o
+ .debug_str       0x00067e         0x32 build/default/production/mcc_generated_files/tmr1.o
+ .debug_str       0x0006b0        0x55a build/default/production/main.o
 
 .debug_loc
  *(.debug_loc)
@@ -3738,13 +3738,13 @@ LOAD c:/program files/microchip/xc16/v1.50/bin/bin/../../lib\libm-elf.a
 LOAD c:/program files/microchip/xc16/v1.50/bin/bin/../../lib\liblega-c-elf.a
 END GROUP
 OUTPUT(dist/default/production/PWM22.X.production.elf elf32-pic30)
-LOAD /CW/_FGS
+LOAD /CW/_FGSÀø“
 LOAD jump_table
 LOAD default_isr
 LOAD data_init
 
 .debug_pubtypes
-                  0x000110        0xfec
+                  0x000110       0x1011
  .debug_pubtypes
                   0x000110         0x1f build/default/production/mcc_generated_files/pin_manager.o
  .debug_pubtypes
@@ -3756,144 +3756,144 @@ LOAD data_init
  .debug_pubtypes
                   0x000623        0x3d1 build/default/production/mcc_generated_files/pwm.o
  .debug_pubtypes
-                  0x0009f4         0x61 build/default/production/mcc_generated_files/clock.o
+                  0x0009f4         0x86 build/default/production/mcc_generated_files/clock.o
  .debug_pubtypes
-                  0x000a55         0x42 build/default/production/mcc_generated_files/reset.o
+                  0x000a7a         0x42 build/default/production/mcc_generated_files/reset.o
  .debug_pubtypes
-                  0x000a97         0xa4 build/default/production/mcc_generated_files/tmr1.o
+                  0x000abc         0xa4 build/default/production/mcc_generated_files/tmr1.o
  .debug_pubtypes
-                  0x000b3b        0x5c1 build/default/production/main.o
+                  0x000b60        0x5c1 build/default/production/main.o
 
 __c30_signature
-                  0x0010fc        0x180
+                  0x001121        0x180
  __c30_signature
-                  0x0010fc          0x6 build/default/production/mcc_generated_files/pin_manager.o
+                  0x001121          0x6 build/default/production/mcc_generated_files/pin_manager.o
  __c30_signature
-                  0x001102          0x6 build/default/production/mcc_generated_files/traps.o
+                  0x001127          0x6 build/default/production/mcc_generated_files/traps.o
  __c30_signature
-                  0x001108          0x6 build/default/production/mcc_generated_files/system.o
+                  0x00112d          0x6 build/default/production/mcc_generated_files/system.o
  __c30_signature
-                  0x00110e          0x6 build/default/production/mcc_generated_files/interrupt_manager.o
+                  0x001133          0x6 build/default/production/mcc_generated_files/interrupt_manager.o
  __c30_signature
-                  0x001114          0x6 build/default/production/mcc_generated_files/pwm.o
+                  0x001139          0x6 build/default/production/mcc_generated_files/pwm.o
  __c30_signature
-                  0x00111a          0x6 build/default/production/mcc_generated_files/clock.o
+                  0x00113f          0x6 build/default/production/mcc_generated_files/clock.o
  __c30_signature
-                  0x001120          0x6 build/default/production/mcc_generated_files/mcc.o
+                  0x001145          0x6 build/default/production/mcc_generated_files/mcc.o
  __c30_signature
-                  0x001126          0x6 build/default/production/mcc_generated_files/reset.o
+                  0x00114b          0x6 build/default/production/mcc_generated_files/reset.o
  __c30_signature
-                  0x00112c          0x6 build/default/production/mcc_generated_files/tmr1.o
+                  0x001151          0x6 build/default/production/mcc_generated_files/tmr1.o
  __c30_signature
-                  0x001132          0x6 build/default/production/main.o
+                  0x001157          0x6 build/default/production/main.o
  __c30_signature
-                  0x001138          0x6 c:/program files/microchip/xc16/v1.50/bin/bin/../../lib\liblega-pic30-elf.a(crt0_extendedep.o)
+                  0x00115d          0x6 c:/program files/microchip/xc16/v1.50/bin/bin/../../lib\liblega-pic30-elf.a(crt0_extendedep.o)
  __c30_signature
-                  0x00113e          0x6 c:/program files/microchip/xc16/v1.50/bin/bin/../../lib\liblega-pic30-elf.a(data_init_extended.o)
+                  0x001163          0x6 c:/program files/microchip/xc16/v1.50/bin/bin/../../lib\liblega-pic30-elf.a(data_init_extended.o)
  __c30_signature
-                  0x001144          0x6 c:/program files/microchip/xc16/v1.50/bin/bin/../../lib\liblega-pic30-elf.a(delay32ep.Leo)
+                  0x001169          0x6 c:/program files/microchip/xc16/v1.50/bin/bin/../../lib\liblega-pic30-elf.a(delay32ep.Leo)
  __c30_signature
-                  0x00114a          0x6 c:/program files/microchip/xc16/v1.50/bin/bin/../../lib\libm-elf.a(addsf3.epeo)
+                  0x00116f          0x6 c:/program files/microchip/xc16/v1.50/bin/bin/../../lib\libm-elf.a(addsf3.epeo)
  __c30_signature
-                  0x001150          0x6 c:/program files/microchip/xc16/v1.50/bin/bin/../../lib\libm-elf.a(divsf3.epeo)
+                  0x001175          0x6 c:/program files/microchip/xc16/v1.50/bin/bin/../../lib\libm-elf.a(divsf3.epeo)
  __c30_signature
-                  0x001156          0x6 c:/program files/microchip/xc16/v1.50/bin/bin/../../lib\libm-elf.a(feqltle.epeo)
+                  0x00117b          0x6 c:/program files/microchip/xc16/v1.50/bin/bin/../../lib\libm-elf.a(feqltle.epeo)
  __c30_signature
-                  0x00115c          0x6 c:/program files/microchip/xc16/v1.50/bin/bin/../../lib\libm-elf.a(fgtge.epeo)
+                  0x001181          0x6 c:/program files/microchip/xc16/v1.50/bin/bin/../../lib\libm-elf.a(fgtge.epeo)
  __c30_signature
-                  0x001162          0x6 c:/program files/microchip/xc16/v1.50/bin/bin/../../lib\libm-elf.a(fixsfsi.epeo)
+                  0x001187          0x6 c:/program files/microchip/xc16/v1.50/bin/bin/../../lib\libm-elf.a(fixsfsi.epeo)
  __c30_signature
-                  0x001168          0x6 c:/program files/microchip/xc16/v1.50/bin/bin/../../lib\libm-elf.a(fixunssfsi.epeo)
+                  0x00118d          0x6 c:/program files/microchip/xc16/v1.50/bin/bin/../../lib\libm-elf.a(fixunssfsi.epeo)
  __c30_signature
-                  0x00116e          0x6 c:/program files/microchip/xc16/v1.50/bin/bin/../../lib\libm-elf.a(floatsisf.epeo)
+                  0x001193          0x6 c:/program files/microchip/xc16/v1.50/bin/bin/../../lib\libm-elf.a(floatsisf.epeo)
  __c30_signature
-                  0x001174          0x6 c:/program files/microchip/xc16/v1.50/bin/bin/../../lib\libm-elf.a(fpack.epeo)
+                  0x001199          0x6 c:/program files/microchip/xc16/v1.50/bin/bin/../../lib\libm-elf.a(fpack.epeo)
  __c30_signature
-                  0x00117a          0x6 c:/program files/microchip/xc16/v1.50/bin/bin/../../lib\libm-elf.a(funpack.epeo)
+                  0x00119f          0x6 c:/program files/microchip/xc16/v1.50/bin/bin/../../lib\libm-elf.a(funpack.epeo)
  __c30_signature
-                  0x001180          0x6 c:/program files/microchip/xc16/v1.50/bin/bin/../../lib\libm-elf.a(funpack2.epeo)
+                  0x0011a5          0x6 c:/program files/microchip/xc16/v1.50/bin/bin/../../lib\libm-elf.a(funpack2.epeo)
  __c30_signature
-                  0x001186          0x6 c:/program files/microchip/xc16/v1.50/bin/bin/../../lib\libm-elf.a(futil.epeo)
+                  0x0011ab          0x6 c:/program files/microchip/xc16/v1.50/bin/bin/../../lib\libm-elf.a(futil.epeo)
  __c30_signature
-                  0x00118c          0x6 c:/program files/microchip/xc16/v1.50/bin/bin/../../lib\libm-elf.a(mulsf3.epeo)
+                  0x0011b1          0x6 c:/program files/microchip/xc16/v1.50/bin/bin/../../lib\libm-elf.a(mulsf3.epeo)
  __c30_signature
-                  0x001192          0x6 c:/program files/microchip/xc16/v1.50/bin/bin/../../lib\libm-elf.a(fcompare.epeo)
+                  0x0011b7          0x6 c:/program files/microchip/xc16/v1.50/bin/bin/../../lib\libm-elf.a(fcompare.epeo)
  __c30_signature
-                  0x001198          0x6 c:/program files/microchip/xc16/v1.50/bin/bin/../../lib\libm-elf.a(floatdisf.epeo)
+                  0x0011bd          0x6 c:/program files/microchip/xc16/v1.50/bin/bin/../../lib\libm-elf.a(floatdisf.epeo)
  __c30_signature
-                  0x00119e          0x6 c:/program files/microchip/xc16/v1.50/bin/bin/../../lib\libm-elf.a(floatundisf.epeo)
+                  0x0011c3          0x6 c:/program files/microchip/xc16/v1.50/bin/bin/../../lib\libm-elf.a(floatundisf.epeo)
  __c30_signature
-                  0x0011a4          0x6 c:/program files/microchip/xc16/v1.50/bin/bin/../../lib\liblega-c-elf.a(sprintf_cdfFnopuxX.EPeo)
+                  0x0011c9          0x6 c:/program files/microchip/xc16/v1.50/bin/bin/../../lib\liblega-c-elf.a(sprintf_cdfFnopuxX.EPeo)
  __c30_signature
-                  0x0011aa          0x6 c:/program files/microchip/xc16/v1.50/bin/bin/../../lib\liblega-c-elf.a(xprintf_cdfFnopuxX.EPeo)
+                  0x0011cf          0x6 c:/program files/microchip/xc16/v1.50/bin/bin/../../lib\liblega-c-elf.a(xprintf_cdfFnopuxX.EPeo)
  __c30_signature
-                  0x0011b0          0x6 c:/program files/microchip/xc16/v1.50/bin/bin/../../lib\liblega-c-elf.a(memcpy.EP_eo)
+                  0x0011d5          0x6 c:/program files/microchip/xc16/v1.50/bin/bin/../../lib\liblega-c-elf.a(memcpy.EP_eo)
  __c30_signature
-                  0x0011b6          0x6 c:/program files/microchip/xc16/v1.50/bin/bin/../../lib\liblega-c-elf.a(strchr.EP_eo)
+                  0x0011db          0x6 c:/program files/microchip/xc16/v1.50/bin/bin/../../lib\liblega-c-elf.a(strchr.EP_eo)
  __c30_signature
-                  0x0011bc          0x6 c:/program files/microchip/xc16/v1.50/bin/bin/../../lib\liblega-c-elf.a(xputtxt.EP_eo)
+                  0x0011e1          0x6 c:/program files/microchip/xc16/v1.50/bin/bin/../../lib\liblega-c-elf.a(xputtxt.EP_eo)
  __c30_signature
-                  0x0011c2          0x6 c:/program files/microchip/xc16/v1.50/bin/bin/../../lib\liblega-c-elf.a(xvacopy.EP_eo)
+                  0x0011e7          0x6 c:/program files/microchip/xc16/v1.50/bin/bin/../../lib\liblega-c-elf.a(xvacopy.EP_eo)
  __c30_signature
-                  0x0011c8          0x6 c:/program files/microchip/xc16/v1.50/bin/bin/../../lib\liblega-c-elf.a(xputfld_cdfFnopuxX.EPeo)
+                  0x0011ed          0x6 c:/program files/microchip/xc16/v1.50/bin/bin/../../lib\liblega-c-elf.a(xputfld_cdfFnopuxX.EPeo)
  __c30_signature
-                  0x0011ce          0x6 c:/program files/microchip/xc16/v1.50/bin/bin/../../lib\liblega-c-elf.a(xldtob_cdfFnopuxX.EPeo)
+                  0x0011f3          0x6 c:/program files/microchip/xc16/v1.50/bin/bin/../../lib\liblega-c-elf.a(xldtob_cdfFnopuxX.EPeo)
  __c30_signature
-                  0x0011d4          0x6 c:/program files/microchip/xc16/v1.50/bin/bin/../../lib\liblega-c-elf.a(xgenld_cdfFnopuxX.EPeo)
+                  0x0011f9          0x6 c:/program files/microchip/xc16/v1.50/bin/bin/../../lib\liblega-c-elf.a(xgenld_cdfFnopuxX.EPeo)
  __c30_signature
-                  0x0011da          0x6 c:/program files/microchip/xc16/v1.50/bin/bin/../../lib\liblega-c-elf.a(div.EP_eo)
+                  0x0011ff          0x6 c:/program files/microchip/xc16/v1.50/bin/bin/../../lib\liblega-c-elf.a(div.EP_eo)
  __c30_signature
-                  0x0011e0          0x6 c:/program files/microchip/xc16/v1.50/bin/bin/../../lib\liblega-c-elf.a(ldiv.EP_eo)
+                  0x001205          0x6 c:/program files/microchip/xc16/v1.50/bin/bin/../../lib\liblega-c-elf.a(ldiv.EP_eo)
  __c30_signature
-                  0x0011e6          0x6 c:/program files/microchip/xc16/v1.50/bin/bin/../../lib\liblega-c-elf.a(xldunsca.EP_eo)
+                  0x00120b          0x6 c:/program files/microchip/xc16/v1.50/bin/bin/../../lib\liblega-c-elf.a(xldunsca.EP_eo)
  __c30_signature
-                  0x0011ec          0x6 c:/program files/microchip/xc16/v1.50/bin/bin/../../lib\liblega-c-elf.a(xlitob.EP_eo)
+                  0x001211          0x6 c:/program files/microchip/xc16/v1.50/bin/bin/../../lib\liblega-c-elf.a(xlitob.EP_eo)
  __c30_signature
-                  0x0011f2          0x6 c:/program files/microchip/xc16/v1.50/bin/bin/../../lib\liblega-c-elf.a(xdnorm.EP_elo)
+                  0x001217          0x6 c:/program files/microchip/xc16/v1.50/bin/bin/../../lib\liblega-c-elf.a(xdnorm.EP_elo)
  __c30_signature
-                  0x0011f8          0x6 c:/program files/microchip/xc16/v1.50/bin/bin/../../lib\libm-elf.a(deqltle.epeo)
+                  0x00121d          0x6 c:/program files/microchip/xc16/v1.50/bin/bin/../../lib\libm-elf.a(deqltle.epeo)
  __c30_signature
-                  0x0011fe          0x6 c:/program files/microchip/xc16/v1.50/bin/bin/../../lib\libm-elf.a(dgtge.epeo)
+                  0x001223          0x6 c:/program files/microchip/xc16/v1.50/bin/bin/../../lib\libm-elf.a(dgtge.epeo)
  __c30_signature
-                  0x001204          0x6 c:/program files/microchip/xc16/v1.50/bin/bin/../../lib\libm-elf.a(divdf3.epeo)
+                  0x001229          0x6 c:/program files/microchip/xc16/v1.50/bin/bin/../../lib\libm-elf.a(divdf3.epeo)
  __c30_signature
-                  0x00120a          0x6 c:/program files/microchip/xc16/v1.50/bin/bin/../../lib\libm-elf.a(divsi3.epeo)
+                  0x00122f          0x6 c:/program files/microchip/xc16/v1.50/bin/bin/../../lib\libm-elf.a(divsi3.epeo)
  __c30_signature
-                  0x001210          0x6 c:/program files/microchip/xc16/v1.50/bin/bin/../../lib\libm-elf.a(dpack.epeo)
+                  0x001235          0x6 c:/program files/microchip/xc16/v1.50/bin/bin/../../lib\libm-elf.a(dpack.epeo)
  __c30_signature
-                  0x001216          0x6 c:/program files/microchip/xc16/v1.50/bin/bin/../../lib\libm-elf.a(dunpack2.epeo)
+                  0x00123b          0x6 c:/program files/microchip/xc16/v1.50/bin/bin/../../lib\libm-elf.a(dunpack2.epeo)
  __c30_signature
-                  0x00121c          0x6 c:/program files/microchip/xc16/v1.50/bin/bin/../../lib\libm-elf.a(extendsfdf.epeo)
+                  0x001241          0x6 c:/program files/microchip/xc16/v1.50/bin/bin/../../lib\libm-elf.a(extendsfdf.epeo)
  __c30_signature
-                  0x001222          0x6 c:/program files/microchip/xc16/v1.50/bin/bin/../../lib\libm-elf.a(fixdfsi.epeo)
+                  0x001247          0x6 c:/program files/microchip/xc16/v1.50/bin/bin/../../lib\libm-elf.a(fixdfsi.epeo)
  __c30_signature
-                  0x001228          0x6 c:/program files/microchip/xc16/v1.50/bin/bin/../../lib\libm-elf.a(floatsidf.epeo)
+                  0x00124d          0x6 c:/program files/microchip/xc16/v1.50/bin/bin/../../lib\libm-elf.a(floatsidf.epeo)
  __c30_signature
-                  0x00122e          0x6 c:/program files/microchip/xc16/v1.50/bin/bin/../../lib\libm-elf.a(muldf3.epeo)
+                  0x001253          0x6 c:/program files/microchip/xc16/v1.50/bin/bin/../../lib\libm-elf.a(muldf3.epeo)
  __c30_signature
-                  0x001234          0x6 c:/program files/microchip/xc16/v1.50/bin/bin/../../lib\libm-elf.a(subdf3.epeo)
+                  0x001259          0x6 c:/program files/microchip/xc16/v1.50/bin/bin/../../lib\libm-elf.a(subdf3.epeo)
  __c30_signature
-                  0x00123a          0x6 c:/program files/microchip/xc16/v1.50/bin/bin/../../lib\libm-elf.a(udivsi3.epeo)
+                  0x00125f          0x6 c:/program files/microchip/xc16/v1.50/bin/bin/../../lib\libm-elf.a(udivsi3.epeo)
  __c30_signature
-                  0x001240          0x6 c:/program files/microchip/xc16/v1.50/bin/bin/../../lib\libm-elf.a(umodsi3.epeo)
+                  0x001265          0x6 c:/program files/microchip/xc16/v1.50/bin/bin/../../lib\libm-elf.a(umodsi3.epeo)
  __c30_signature
-                  0x001246          0x6 c:/program files/microchip/xc16/v1.50/bin/bin/../../lib\libm-elf.a(mulsi3.epeo)
+                  0x00126b          0x6 c:/program files/microchip/xc16/v1.50/bin/bin/../../lib\libm-elf.a(mulsi3.epeo)
  __c30_signature
-                  0x00124c          0x6 c:/program files/microchip/xc16/v1.50/bin/bin/../../lib\libm-elf.a(divmoddi3.epeo)
+                  0x001271          0x6 c:/program files/microchip/xc16/v1.50/bin/bin/../../lib\libm-elf.a(divmoddi3.epeo)
  __c30_signature
-                  0x001252          0x6 c:/program files/microchip/xc16/v1.50/bin/bin/../../lib\libm-elf.a(adddf3.epeo)
+                  0x001277          0x6 c:/program files/microchip/xc16/v1.50/bin/bin/../../lib\libm-elf.a(adddf3.epeo)
  __c30_signature
-                  0x001258          0x6 c:/program files/microchip/xc16/v1.50/bin/bin/../../lib\libm-elf.a(dcompare.epeo)
+                  0x00127d          0x6 c:/program files/microchip/xc16/v1.50/bin/bin/../../lib\libm-elf.a(dcompare.epeo)
  __c30_signature
-                  0x00125e          0x6 c:/program files/microchip/xc16/v1.50/bin/bin/../../lib\libm-elf.a(dpropagateNaN.epeo)
+                  0x001283          0x6 c:/program files/microchip/xc16/v1.50/bin/bin/../../lib\libm-elf.a(dpropagateNaN.epeo)
  __c30_signature
-                  0x001264          0x6 c:/program files/microchip/xc16/v1.50/bin/bin/../../lib\libm-elf.a(dtype.epeo)
+                  0x001289          0x6 c:/program files/microchip/xc16/v1.50/bin/bin/../../lib\libm-elf.a(dtype.epeo)
  __c30_signature
-                  0x00126a          0x6 c:/program files/microchip/xc16/v1.50/bin/bin/../../lib\libm-elf.a(dunpack.epeo)
+                  0x00128f          0x6 c:/program files/microchip/xc16/v1.50/bin/bin/../../lib\libm-elf.a(dunpack.epeo)
  __c30_signature
-                  0x001270          0x6 c:/program files/microchip/xc16/v1.50/bin/bin/../../lib\libm-elf.a(floatdidf.epeo)
+                  0x001295          0x6 c:/program files/microchip/xc16/v1.50/bin/bin/../../lib\libm-elf.a(floatdidf.epeo)
  __c30_signature
-                  0x001276          0x6 c:/program files/microchip/xc16/v1.50/bin/bin/../../lib\libm-elf.a(floatundidf.epeo)
+                  0x00129b          0x6 c:/program files/microchip/xc16/v1.50/bin/bin/../../lib\libm-elf.a(floatundidf.epeo)
 
 .nbss               0x1000         0x42
  .nbss              0x1000         0x42 build/default/production/main.o
@@ -4102,7 +4102,7 @@ __c30_signature
 .dinit            0x003548         0xbc
  .dinit           0x003548         0xbc data_init
 
-.text             0x003604        0x1ac
+.text             0x003604        0x1b4
  .text            0x003604         0xb8 build/default/production/mcc_generated_files/tmr1.o
                   0x003604                  _TMR1_Initialize
                   0x003628                  _TMR1_Period16BitSet
@@ -4118,17 +4118,17 @@ __c30_signature
                   0x0036b0                  _TMR1_SoftwareCounterClear
  .text            0x0036bc         0x6c build/default/production/mcc_generated_files/pin_manager.o
                   0x0036bc                  _PIN_MANAGER_Initialize
- .text            0x003728         0x54 build/default/production/mcc_generated_files/clock.o
+ .text            0x003728         0x5c build/default/production/mcc_generated_files/clock.o
                   0x003728                  _CLOCK_Initialize
- .text            0x00377c         0x34 build/default/production/mcc_generated_files/system.o
-                  0x00379a                  _SYSTEM_Initialize
+ .text            0x003784         0x34 build/default/production/mcc_generated_files/system.o
+                  0x0037a2                  _SYSTEM_Initialize
 
-.init.delay32     0x0037b0         0x1c
- .init.delay32    0x0037b0         0x1c c:/program files/microchip/xc16/v1.50/bin/bin/../../lib\liblega-pic30-elf.a(delay32ep.Leo)
-                  0x0037b0                  ___delay32
+.init.delay32     0x0037b8         0x1c
+ .init.delay32    0x0037b8         0x1c c:/program files/microchip/xc16/v1.50/bin/bin/../../lib\liblega-pic30-elf.a(delay32ep.Leo)
+                  0x0037b8                  ___delay32
 
-.text             0x0037cc         0x28
- .text            0x0037cc         0x18 build/default/production/mcc_generated_files/traps.o
-                  0x0037cc                  _TRAPS_halt_on_error
- .text            0x0037e4         0x10 build/default/production/mcc_generated_files/interrupt_manager.o
-                  0x0037e4                  _INTERRUPT_Initialize
+.text             0x0037d4         0x28
+ .text            0x0037d4         0x18 build/default/production/mcc_generated_files/traps.o
+                  0x0037d4                  _TRAPS_halt_on_error
+ .text            0x0037ec         0x10 build/default/production/mcc_generated_files/interrupt_manager.o
+                  0x0037ec                  _INTERRUPT_Initialize

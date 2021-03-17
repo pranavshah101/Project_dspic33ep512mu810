@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<project>
+  <executable name="dist/default/production/USB_Host_-_MSD_-_Simple_Demo_-_XC16.X.production.elf">
+    <memory name="data">
+      <units>bytes</units>
+      <length>53248</length>
+      <used>7332</used>
+      <free>45916</free>
+    </memory>
+    <memory name="program">
+      <units>bytes</units>
+      <length>524544</length>
+      <used>65310</used>
+      <free>459234</free>
+    </memory>
+  </executable>
+</project>

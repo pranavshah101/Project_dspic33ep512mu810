@@ -24,6 +24,8 @@
       </logicalFolder>
       <itemPath>lcd.h</itemPath>
       <itemPath>function.h</itemPath>
+      <itemPath>i2c.h</itemPath>
+      <itemPath>rtc.h</itemPath>
     </logicalFolder>
     <logicalFolder name="LinkerScript"
                    displayName="Linker Files"

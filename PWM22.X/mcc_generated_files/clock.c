@@ -48,15 +48,30 @@
 
 void CLOCK_Initialize(void)
 {
-    PLLFBD=6; // M=48 //455
-    CLKDIVbits.PLLPOST=0; // N2=2 //2
-    CLKDIVbits.PLLPRE=0; // N1=2 //2
-// Initiate Clock Switch to Primary Oscillator with PLL (NOSC=0b011)
-    __builtin_write_OSCCONH(0x03);
-    __builtin_write_OSCCONL(OSCCON | 0x01);
-// Wait for Clock switch to occur
-    while (OSCCONbits.COSC!= 0b011);
-// Wait for PLL to lock
-    while (OSCCONbits.LOCK!= 1);
+     PLLFBD =24;				/* M  = 60	*/
+	CLKDIVbits.PLLPOST = 0;		/* N1 = 2	*/
+	CLKDIVbits.PLLPRE = 0;		/* N2 = 2	*/
+	OSCTUN = 0;			
+
+    /*	Initiate Clock Switch to Primary
+     *	Oscillator with PLL (NOSC= 0x3)*/
+	
+    __builtin_write_OSCCONH(0x03);		
+	__builtin_write_OSCCONL(0x01);
+	
+	while (OSCCONbits.COSC != 0x3);       
+
+    // Configuring the auxiliary PLL, since the primary
+    // oscillator provides the source clock to the auxiliary
+    // PLL, the auxiliary oscillator is disabled. Note that
+    // the AUX PLL is enabled. The input 8MHz clock is divided
+    // by 2, multiplied by 24 and then divided by 2. Wait till 
+    // the AUX PLL locks.
+
+    ACLKCON3 = 0x24C1;   
+    ACLKDIV3 = 0x7;
+    
+    ACLKCON3bits.ENAPLL = 1;
+    while(ACLKCON3bits.APLLCK != 1); 
 }
 

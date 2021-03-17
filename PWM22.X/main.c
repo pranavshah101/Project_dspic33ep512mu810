@@ -6,6 +6,7 @@
 #include <libpic30.h>
 #include "lcd.h"
 #include "function.h"
+
 #define RBC_NO_Fault   0
 #define RBC_Fault      1
 #define EBC_NO_Fault   0      
@@ -21,17 +22,21 @@
 #define Minimum_EBC_Voltage 205
 #define Maxmium_EBC_OP_Voltage 116
 #define EBC_Short_Ckt_Current  24
-#define Reverse_Polarity_Detected      1 //0
-#define Reverse_Polarity_Not_Detected   0  //1
+#define Reverse_Polarity_Detected      1//1
+#define Reverse_Polarity_Not_Detected   0//0
 #define Maximum_Input_Voltage  270
 #define Minimum_Input_Voltage  202
 #define CHRG_ON_LED   _LATD8
 #define Medium_Range_Bat_Current  33
 #define Restricted_EBC_Current  22
-#define Positive_Earth_Leakage   1
-#define Positive_Earth_No_Detected 0
-#define Negative_Earth_Leakage    1
-#define Negative_Earth_No_Detected 0
+#define Positive_Earth_Leakage   1//1
+#define Positive_Earth_No_Detected 0//0
+#define Negative_Earth_Leakage    1//1
+#define Negative_Earth_No_Detected 0//0
+#define  DS13070  0xD0
+#define  DS13071  0xD1
+
+#include "i2c.h"
 
 int phase_B[110], phase_Y[110], phase_R[110];
 int i;
@@ -57,6 +62,9 @@ int R_Y, Y_B, B_R;
 int e,f;
 int counter_ShortCkt=1;
 float res;
+int hours=12;
+int hours_enter=12;
+unsigned char dat=0x15;
 unsigned char v[10];
 unsigned long output[10];
 unsigned long current[10];
@@ -65,6 +73,21 @@ unsigned long current2[10];
 unsigned long Power_Var[10];
 unsigned long output1[10];
 unsigned long v1[10];
+unsigned char temp=0x26;
+unsigned char time[10];
+
+ RTCTime result;
+ unsigned char year;
+ unsigned char month;
+ unsigned char day;
+ unsigned char weekday;
+ unsigned char hour;
+ unsigned char minutes;
+ unsigned char seconds;
+
+
+
+
 
 void My_Timer_ISR()
 {
@@ -128,7 +151,7 @@ int main(void)
     TMR1_Start();
     __delay_ms(500);
     LCD_Command(0x01);
-
+    char buffer[10];
     int p, j, l, n, m, a, x, y;
     float k_RBC = 34;
     float k_EBC=25;
@@ -138,25 +161,36 @@ int main(void)
     int flag = 0;
     int flag_shut_down=0;
      int flag_shut_down_EBC=0;
+     
      TRISDbits.TRISD13=1;            // DC_Coil
      TRISFbits.TRISF12=1;            // IGBT_TRIP
      TRISFbits.TRISF13=1;            // Rectifier_TRIP
     
      TRISDbits.TRISD8=0;             // CHRG_ON_LED
-     TRISGbits.TRISG9=0;             // BUZZER
+     TRISGbits.TRISG9=0;             // BUZZERI
      
+     
+     
+     
+     //I2CInit();
+     
+     I2CInit();
+    DS1307_init();
+    //setRTCTime(21,3,15,1,13,36,00);
+     //
+   
+     
+     __delay_ms(100);
     while (1) 
     {
-        IO_RD8_SetHigh();
-/*********** SWITCHES *********************************************************/      
-      
+        result =  getRTCTime();
+        
+        
         j = IO_RF5_GetValue();       // ENTER
         l = IO_RG13_GetValue();      // BACK
         n = IO_RA6_GetValue();       // UP
         p = IO_RA7_GetValue();       // DOWN
         
-/*****************************************************************************/       
-       
         m = M_RBC_FLT_GetValue();    // RD6-RBC IGBT FAULT
         a = M_EBC_FLT_GetValue();    // RD7-EBC IGBT FAULT
         x = IO_RD4_GetValue();       // Earth_Leakage1
@@ -191,6 +225,20 @@ int main(void)
             Battery_Current_SP--;
         }
         
+        
+        else if(n==0 && p==1 && flag==6)
+        {
+            hours++;
+        }
+        
+        else if(n==1 && p==0 && flag==6)
+        {
+            hours--;
+        }
+        
+        
+        
+        
 /*******************************************************************************/
         /*RBC Output voltage limit*/
         
@@ -203,6 +251,7 @@ int main(void)
          {
             RBC_SP = 110;
         }
+        
         
 /********************************************************************************/  
         
@@ -217,8 +266,16 @@ int main(void)
             Battery_Current_SP=10;
         }
         
-/************************************************************************/               
         
+/************************************************************************/               
+        if(hours>24)
+        {
+            hours=24;
+        }
+        else if(hours<0)
+        {
+            hours=0;
+        }
         /*Enter button is pressed*/
         
         if (j == 0 && flag==2) 
@@ -232,7 +289,15 @@ int main(void)
         }
         
 /******************************************************************************/        
+        else   if(j==0 && flag==6)
+        {
+            hours_enter=hours;
+        }
+        
+        
        
+        
+        
            /*Earth Leakage*/
         
         if(x==Positive_Earth_Leakage)
@@ -349,18 +414,12 @@ int main(void)
             flag_igbt_trip=0;
             //flag_igbt_trip=0;
         }
-
+        
+        
+       
 /******************************************************************************/        
         
-       if(OP_Voltage>= Minimum_OP_Voltage) 
-       {
-           IO_RA3_SetLow();
-       }
-       else
-       {
-           IO_RA3_SetHigh();           // Battery_Not_Healthy_Led
-       }
-       
+      
 /******************************************************************************/        
        
         /*Y-phase is absent*/
@@ -430,7 +489,7 @@ if ((voltage >Minimum_Input_Voltage && voltage<Maximum_Input_Voltage)&&(voltage1
             {
                
                 ALL_RELAY_OFF();
-                __delay_us(10);
+                __delay_us(1);
                 RBC_POWER_SEQ();
                 flag_RBC = 0;
             }
@@ -601,7 +660,7 @@ if ((voltage >Minimum_Input_Voltage && voltage<Maximum_Input_Voltage)&&(voltage1
            }*/
            
           /* else if(I_Total>Maximum_RBC_Current)
-           {
+           {f
               k_RBC=k_RBC-0.5;
                PWM_Duty_Cycle_RBC(k_RBC);
                if(k_RBC>45)
@@ -634,7 +693,24 @@ if ((voltage >Minimum_Input_Voltage && voltage<Maximum_Input_Voltage)&&(voltage1
                 flag_under_detected=1;
                 
             }
-           
+           if(result.hour>=(hours_enter) && result.hour<=(hours_enter+1))
+        {
+            PWM_RBC_Shut_Down();
+            if(OP_Voltage<Minimum_OP_Voltage)
+            {
+                IO_RA3_SetHigh();
+            }
+            
+            if(OP_Voltage<=Minimum_OP_Voltage)
+            {
+                continue;
+            }
+            else
+            {
+                IO_RA3_SetLow();
+            }
+            
+        }
            
               else if(I_B>=Maximum_Bat_Current)
               {
@@ -1064,14 +1140,11 @@ else
             flag_RBC = 1;
 
         }
-
-/**************************END EBC MODE*****************************************/
         
-
         if (l == 0) // BACK button is pressed
         {
             flag = flag + 1;
-            if (flag >= 7) 
+            if (flag >= 8) 
             {
                 flag = 0;
             }
@@ -1079,7 +1152,7 @@ else
         if (flag == 1) 
         {
             LCD_Command(0x01);
-            __delay_ms(10);
+            __delay_ms(1);
             //LCD_String_xy(1,0,"Input_voltage:");
 
             // LCD_String_xy(1,0,"CT2:");
@@ -1104,13 +1177,13 @@ else
             sprintf(v, "%d", RBC_SP);
             LCD_String_xy(2, 4, v);
 
-            __delay_ms(100);
+            __delay_ms(30);
         }
-        if (flag == 2) 
+        if (flag == 3) 
         {
 
             LCD_Command(0x01);
-            __delay_ms(10);
+            __delay_ms(1);
             LCD_String_xy(1, 1, "RBC_SP:");
             sprintf(v, "%d", RBC_SP);
             LCD_String_xy(1, 10, v);
@@ -1120,14 +1193,14 @@ else
             sprintf(output, "%d", OP_Voltage);
             LCD_String_xy(2, 12, output);
 
-            __delay_ms(100);
+            __delay_ms(30);
 
         }
 
-        if (flag == 6)
+        if (flag == 0)
         {
             LCD_Command(0x01);
-            __delay_ms(10);
+            __delay_ms(1);
 
 
             LCD_String_xy(1, 0, "PH_B=");
@@ -1143,12 +1216,12 @@ else
             LCD_String_xy(2, 0, "PH_R=");
             sprintf(data2, "%d", voltage2); // Displaying phase R
             LCD_String_xy(2, 5, data2);
-            __delay_ms(100);
+            __delay_ms(1);
         }
 
         if (flag == 4) {
             LCD_Command(0x01);
-            __delay_ms(10);
+            __delay_ms(1);
             LCD_String_xy(1, 1, "EBC_SP:");
             sprintf(v, "%d", EBC_SP);
             LCD_String_xy(1, 10, v);
@@ -1158,14 +1231,14 @@ else
             sprintf(output, "%d", OP_Voltage);
             LCD_String_xy(2, 12, output);
 
-            __delay_ms(100);
+            __delay_ms(30);
         }
         
         
         if(flag==5)
         {
             LCD_Command(0x01);
-            __delay_ms(10);
+            __delay_ms(1);
             LCD_String_xy(1,1,"I_Bat_SP:");
             sprintf(v1,"%d",Battery_Current_SP);
             LCD_String_xy(1,12,v1);
@@ -1174,11 +1247,11 @@ else
             sprintf(output1, "%.1f",I_B);
             LCD_String_xy(2, 12, output1);
             
-            __delay_ms(100);
+            __delay_ms(30);
 
     }
         
-        if(flag==0)
+        if(flag==2)
         {
            sprintf(current, "%.1f", I_B);
             LCD_String_xy(1, 0, current);
@@ -1201,13 +1274,35 @@ else
             sprintf(v, "%d", EBC_SP);
             LCD_String_xy(2, 4, v);
 
-            __delay_ms(100);
+            __delay_ms(30);
             
            
+        }
+        
+        if(flag==6)
+        {
+            LCD_Command(0x01);
+            __delay_ms(1);
+            LCD_String_xy(1,1,"Set time:");
+            sprintf(buffer,"%d",hours);
+            LCD_String_xy(1,11,buffer);
+            sprintf(time,"%d",result.hour);
+            LCD_String_xy(2,1,time);
+            LCD_String_xy(2,4,":");
+             sprintf(time,"%d",result.minute);
+            LCD_String_xy(2,5,time);
+            LCD_String_xy(2,7,":");
+             sprintf(time,"%d",result.second);
+            LCD_String_xy(2,9,time);
+            
+            __delay_ms(30);
+            
         }
 
         
        
-
+        
+        
+        
 }
 }

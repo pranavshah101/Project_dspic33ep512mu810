@@ -124,7 +124,7 @@ void PWM_RBC_MODE (void)
     // SSEVTCMP 0; 
     SSEVTCMP = 0x00;
     // PTPER 842;      // By using PLL, Fosc=16MHz,  PTPER = (Fosc)/((Fpwm)*(pwm input clock prescalar))= 16000000/(19000)*1 = 842
-    PTPER = 471;       // PUSH-PULL Mode
+    PTPER = 1500;       // PUSH-PULL Mode
     // SEVTCMP 0; 
     SEVTCMP = 0x00;
     // MDC 421; 
@@ -319,7 +319,7 @@ void PWM_EBC_MODE (void)
     // SSEVTCMP 0; 
     SSEVTCMP = 0x00;
     // PTPER 842;          // PTPER = (Fosc)/((Fpwm)*(pwm input clock prescalar))= 16000000/(19000)*1 = 842
-    PTPER = 471;           // PUSH-PULL Mode
+    PTPER = 1500;           // PUSH-PULL Mode
     // SEVTCMP 0; 
     SEVTCMP = 0x00;
     // MDC 421; 
@@ -622,7 +622,7 @@ void PWM_Duty_Cycle_RBC(float i)
 {
    PWM_RBC_MODE();
    PTCON = 0x8000;
-   MDC   = 9.42*i;      // PUSH-PULL Mode(For getting 10% duty cycle in DSO of 17KHz freq,we have to put value of 20% of PTPER in this register)
+   MDC   = 30*i;      // PUSH-PULL Mode(For getting 10% duty cycle in DSO of 17KHz freq,we have to put value of 20% of PTPER in this register)
    //IO_RD8_SetHigh();//Charging Led
    //LATDbits.LATD8=1;
 
@@ -643,7 +643,7 @@ void PWM_Duty_Cycle_EBC(float i)
 {
    PWM_EBC_MODE();
    PTCON = 0x8000;
-   MDC   = 9.42*i;    // PUSH-PULL Mode(For getting 10% duty cycle in DSO of 17KHz freq,we have to put value of 20% of PTPER in this register)
+   MDC   =30*i;    // PUSH-PULL Mode(For getting 10% duty cycle in DSO of 17KHz freq,we have to put value of 20% of PTPER in this register)
    
     
 }
