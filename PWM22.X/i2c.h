@@ -179,19 +179,8 @@ RTCTime getRTCTime()
 {
     RTCTime r;
     unsigned char dd;
-    unsigned char buffer[5];
-    dd = read_DS1307(0x00);
-    r.second = bcd2bin(dd);
-    dd = read_DS1307(0x01);
-    r.minute = bcd2bin(dd);
-    dd = read_DS1307(0x02);
-    r.hour = bcd2bin(dd);
-    dd = read_DS1307(0x03);
-    r.weekday = bcd2bin(dd);
-    dd = read_DS1307(0x04);
-    r.date = bcd2bin(dd);
-    dd = read_DS1307(0x05);
-    r.month = bcd2bin(dd);
+   // unsigned char buffer[5];
+   
     dd = read_DS1307(0x06);
     r.year = bcd2bin(dd);
     return r;      

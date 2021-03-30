@@ -44,6 +44,8 @@
       <itemPath>../traps.h</itemPath>
       <itemPath>../watchdog.h</itemPath>
       <itemPath>../i2c.h</itemPath>
+      <itemPath>../spi.h</itemPath>
+      <itemPath>../spieeprom.h</itemPath>
     </logicalFolder>
     <logicalFolder name="LinkerScript"
                    displayName="Linker Files"
@@ -73,6 +75,8 @@
       <itemPath>../system.c</itemPath>
       <itemPath>../tmr1.c</itemPath>
       <itemPath>../traps.c</itemPath>
+      <itemPath>../spi.c</itemPath>
+      <itemPath>../spieeprom.c</itemPath>
     </logicalFolder>
     <logicalFolder name="ExternalFiles"
                    displayName="Important Files"
@@ -103,7 +107,7 @@
         <targetDevice>dsPIC33EP512MU810</targetDevice>
         <targetHeader></targetHeader>
         <targetPluginBoard></targetPluginBoard>
-        <platformTool>PKOBSKDEPlatformTool</platformTool>
+        <platformTool>ICD3PlatformTool</platformTool>
         <languageToolchain>XC16</languageToolchain>
         <languageToolchainVersion>1.50</languageToolchainVersion>
         <platform>3</platform>
@@ -371,6 +375,7 @@
         <property key="ToolFirmwareFilePath"
                   value="Press to browse for a specific firmware version"/>
         <property key="ToolFirmwareOption.UseLatestFirmware" value="true"/>
+        <property key="firmware.download.all" value="false"/>
         <property key="memories.configurationmemory" value="true"/>
         <property key="memories.dataflash" value="true"/>
         <property key="memories.eeprom" value="true"/>

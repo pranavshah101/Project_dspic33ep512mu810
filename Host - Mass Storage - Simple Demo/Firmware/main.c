@@ -69,7 +69,6 @@
 #define Reverse_Polarity_Not_Detected   0//0
 #define Maximum_Input_Voltage  270
 #define Minimum_Input_Voltage  202
-#define CHRG_ON_LED   _LATD8
 #define Medium_Range_Bat_Current  33
 #define Restricted_EBC_Current  22
 #define Positive_Earth_Leakage   1//1
@@ -78,9 +77,14 @@
 #define Negative_Earth_No_Detected 0//0
 #define  DS13070  0xD0
 #define  DS13071  0xD1
-#define pre_fixed_time  12
+#define pre_fixed_time  13
+#define Maximum_Input_Voltage_Phase  540
+#define Minimum_Input_Voltage_Phase  300
 
 #include "i2c.h"
+#include "spi.h"
+#include "spieeprom.h"
+
 
 int phase_B[110], phase_Y[110], phase_R[110];
 int i;
@@ -94,7 +98,7 @@ int flag_igbt_trip=0;
 int counter_fault=1,counter_fault_EBC=1;
 float I_B, I_Total;
 int counter=1;
-int flag_over_detected_voltage=1;
+
 int flag_under_detected;
 int flag_over_detected;
 float Total_Current, Battery_Current;
@@ -105,14 +109,11 @@ int RBC_Enter_SP = 122;
 int R_Y, Y_B, B_R;
 int e,f;
 int counter_ShortCkt=1;
-float res;
+unsigned char res[200];
 int hours=12;
-int hours_enter=12;
-int minutes_enter=59;
+int hours_enter=13;
+int minutes_enter=15;
 int minutes=59;
-
-
-unsigned char dat=0x15;
 unsigned char v[10];
 unsigned long output[10];
 unsigned long current[10];
@@ -122,16 +123,23 @@ unsigned long Power_Var[10];
 unsigned long output1[10];
 unsigned long v1[10];
 unsigned char temp=0x26;
-unsigned char time[10];
+unsigned char time[100],time1[100],time2[100],time3[100],time5[100],time4[100],time6[100],date7[100],date8[100];
+unsigned char date[100],date1[100],date2[100],date3[100],date5[100],date4[100],date6[100],time7[100],time8[100];
+RTCTime result;
+unsigned char year;
+unsigned char month;
+unsigned char day;
+unsigned char weekday;
+unsigned char hour;
+unsigned char minute;
+unsigned char seconds;
+unsigned int txData[10];
+unsigned int rxData[10];
+int flag_over_voltage=0;
+ 
+ int u=0;
+int  s=0,g=0,h=0,d=0,w=0,r=0,o=0,z=0;
 
- RTCTime result;
- unsigned char year;
- unsigned char month;
- unsigned char day;
- unsigned char weekday;
- unsigned char hour;
- unsigned char minute;
- unsigned char seconds;
 
  
  
@@ -149,7 +157,7 @@ void My_Timer_ISR()
         RBC_DCV = ADC1BUF3; // RBC Capacitor voltage
         EBC_DCV = ADC1BUF4; // EBC Capacitor voltage
         //OP_Voltage = ADC1BUF5; // Output voltage
-        CT_3 = ADC1BUF5; // spare pin
+        CT_3 = ADC1BUF5; // spas pin
         CT_2 = ADC1BUF6; 
         CT_1 = ADC1BUF7; 
         OP_Voltage=ADC1BUF8;
@@ -174,8 +182,8 @@ void My_Timer_ISR()
         voltage1 = (phase_Y[0] - 2009) / (float) (5.3008);
         voltage2 = (phase_R[0] - 2005) / (float) (5.3008);
         OP_Voltage = (OP_Voltage)*(0.041);
-        I_Total = (CT_2 - 2104) / (5.200);
-        I_B = ((CT_1 - 2125) / (5.114)) + 2; // Battery current
+        I_Total = (CT_2 - 2104) / (4.90);
+        I_B = ((CT_1 - 2125) / (5.114)) + 2.8; // Battery current
         R_Y = voltage + voltage1;
         Y_B = voltage1 + voltage2;
         B_R = voltage2 + voltage;
@@ -244,11 +252,10 @@ void My_Timer_ISR()
     #error Cannot define configuration bits.
 #endif
 
-FSFILE * myFile;
+FSFILE *myFile;
 BYTE myData[512];
 size_t numBytes;
 volatile BOOL deviceAttached;
-
 unsigned char printBuffer[10];
 unsigned char countchar;
 char arr2[]="Date";
@@ -259,10 +266,9 @@ char arr6[]="From";
 char arr7[]="To";
 char m[]=",";
 char str[100];
-char res1[100];
+char res1[300];
 char res2[100];
 char str1[100];
-int number=100;
 
 void main(void)
 {
@@ -275,13 +281,13 @@ void main(void)
     TMR1_Start();
     __delay_ms(500);
     LCD_Command(0x01);
-    char buffer[10];
+    char buffer[10] ,buffer1[10];
     int p, j, l, n, m, a, x, y;
     float k_RBC = 34;
     float k_EBC=25;
     float power_RBC;
     float power_EBC;
-    int flag_RBC = 1, flag_EBC = 1, flag_reached_RBC = 0, flag_reached_EBC = 0, s = 8;
+    int flag_RBC = 1, flag_EBC = 1, flag_reached_RBC = 0, flag_reached_EBC = 0;
     int flag = 0;
     int flag_shut_down=0;
     int flag_shut_down_EBC=0;
@@ -292,9 +298,7 @@ void main(void)
     
      TRISDbits.TRISD8=0;             // CHRG_ON_LED
      TRISGbits.TRISG9=0;             // BUZZERI
-     
-   
-    deviceAttached = FALSE;
+     deviceAttached = FALSE;
 
     //Initialize the stack
     USBInitialize(0);
@@ -313,8 +317,12 @@ void main(void)
     
     I2CInit();
     DS1307_init();
-   // setRTCTime(21,3,16,2,15,26,00);
+        
+    SPI2INTInit();
+    EEPROMInit();
+   //setRTCTime(21,3,28,7,10,30,00);
     __delay_ms(100);
+   
    
     
     
@@ -325,8 +333,13 @@ void main(void)
 
     while(1)
     {
-      result =  getRTCTime();
-      IO_RD8_SetHigh();
+        result =  getRTCTime();
+       
+        
+        
+      
+      
+      
 /*********** SWITCHES *********************************************************/      
       
         j = IO_RF5_GetValue();       // ENTER
@@ -360,24 +373,24 @@ void main(void)
         
         /*Settable Battery current*/
         
-        else if(n==0 && p==1 && flag==5)        // UP button is pressed
+        else if(n==0 && p==1 && flag==3)        // UP button is pressed
         {
            Battery_Current_SP++;
         }
         
-        else if(n==1 && p==0 && flag==5)        // Down button is pressed
+        else if(n==1 && p==0 && flag==3)        // Down button is pressed
         {
             Battery_Current_SP--;
         }
         
         
-        else if(n==0 && p==1 && flag==8)
+        else if(n==0 && p==1 && flag==5)
         {
             minutes++;
             
         }
         
-        else if(n==1 && p==0 && flag==8)
+        else if(n==1 && p==0 && flag==5)
         {
             minutes--;
         }
@@ -414,7 +427,7 @@ void main(void)
             minutes=0;
         }
         
-        else if(hours<0)
+        else if(minutes<0)
         {
             minutes=0;
         }
@@ -425,12 +438,12 @@ void main(void)
             RBC_Enter_SP = RBC_SP;
         }
         
-        else if(j==0 && flag==5)
+        else if(j==0 && flag==3)
         {
             Battery_Current_SP_Enter=Battery_Current_SP;
         }
         
-        else if(j==0 && flag==8)
+        else if(j==0 && flag==5)
         {
             minutes_enter=minutes;
         }
@@ -470,7 +483,46 @@ void main(void)
         {
             IO_RA4_SetLow();
             
+            EEPROMWriteByte(55,70+z);
+            if(EEPROMReadByte(70+z)==55)
+            {
+                EEPROMWriteByte(result.hour,499+7*z);
+                EEPROMWriteByte(result.minute,501+7*z);
+                EEPROMWriteByte(result.second,502+7*z);
+                EEPROMWriteByte(result.year,503+7*z);
+                EEPROMWriteByte(result.month,504+7*z);
+                EEPROMWriteByte(result.date,505+7*z); 
+            }
+            z++;
+            if(z==7)
+            {
+                z=0;
+            }
+            
         }
+        if(flag_over_voltage==1)
+        {
+            
+            EEPROMWriteByte(56,54+r);
+            if(EEPROMReadByte(56+r)==56)
+                {
+                 EEPROMWriteByte(result.hour,300+7*r);
+                EEPROMWriteByte(result.minute,301+7*r);
+                EEPROMWriteByte(result.second,302+7*r);
+                EEPROMWriteByte(result.year,303+7*r);
+                EEPROMWriteByte(result.month,304+7*r);
+                EEPROMWriteByte(result.date,305+7*r);
+                }
+                
+                r++;
+                if(r==7)
+                {
+                    r=0;
+                }
+                flag_over_voltage=0;
+        }
+       
+       
        
 /*********************************************************************************/        
         
@@ -480,19 +532,34 @@ void main(void)
         if((voltage >=Maximum_Input_Voltage && voltage2>=Maximum_Input_Voltage ) || (voltage>=Maximum_Input_Voltage && voltage1>=Maximum_Input_Voltage) || (voltage1>=Maximum_Input_Voltage && voltage2>=Maximum_Input_Voltage))
         {
             IO_RA15_SetLow();
-            //PWM_EBC_Shut_Down();
+            
         }
         else   if((voltage <=Minimum_Input_Voltage && voltage2<=Minimum_Input_Voltage ) || (voltage<=Minimum_Input_Voltage && voltage1<=Minimum_Input_Voltage) || (voltage1<=Minimum_Input_Voltage && voltage2<=Minimum_Input_Voltage))
         {
             IO_RA15_SetHigh();
-            //PWM_EBC_Shut_Down();
+            EEPROMWriteByte(50,0x16+g);
+            if(EEPROMReadByte(0x16+g)==50)
+            {
+                EEPROMWriteByte(result.hour,162+7*g);
+                EEPROMWriteByte(result.minute,163+7*g);
+                EEPROMWriteByte(result.second,164+7*g);
+                EEPROMWriteByte(result.year,165+7*g);
+                EEPROMWriteByte(result.month,166+7*g);
+                EEPROMWriteByte(result.date,167+7*g); 
+            }
+            g++;
+            if(g==7)
+            {
+                g=0;
+            }
+            
         }
     /****** Detection of over-voltage*******/    
        
         else if((voltage >=Maximum_Input_Voltage && voltage2>=Maximum_Input_Voltage ) || (voltage>=Maximum_Input_Voltage && voltage1>=Maximum_Input_Voltage) || (voltage1>=Maximum_Input_Voltage && voltage2>=Maximum_Input_Voltage))
         {
             IO_RA15_SetLow();
-            //PWM_EBC_Shut_Down();
+            
         }
         
         
@@ -516,60 +583,53 @@ void main(void)
         
         /*Set point increment and Decrement*/
         
-        if((voltage<=Minimum_Input_Voltage)||(voltage1<=Minimum_Input_Voltage )||(voltage2<=Minimum_Input_Voltage)&&(flag_over_detected_voltage==0))
-        {
-           // LCD_Command(0x01);
-            __delay_ms(10);
-            LCD_String_xy(1,0,"Under Voltage");
-            __delay_ms(100);
-            flag_over_detected_voltage=1;
-        }
-        else if((voltage>=Maximum_Input_Voltage)||(voltage1>=Maximum_Input_Voltage)||(voltage2>=Maximum_Input_Voltage))
-        {
-            LCD_Command(0x01);
-             __delay_ms(10);
-            LCD_String_xy(1,0,"Over Voltage");
-            __delay_ms(100);
-        }
+       
         
 /*******************************************************************************/        
        
         /* SCR and IGBT trip*/
        
-        if(flag_scr_trip==0)
+        if(flag_scr_trip==1)
         {
-            LATGbits.LATG9=1;              // Buzzer
-             LCD_Command(0x01);
-             __delay_ms(10);
-            LCD_String_xy(1,0,"SCR TRIP");
-            __delay_ms(100);
-            flag_usb_scr=1;
-           //flag_scr_trip=0;
+            
+            EEPROMWriteByte(49,0x08+s);
+            
+            if(EEPROMReadByte(0x08+s)==49)
+            {
+                EEPROMWriteByte(result.hour,401+7*s);
+                EEPROMWriteByte(result.minute,402+7*s);
+                EEPROMWriteByte(result.second,403+7*s);
+                EEPROMWriteByte(result.year,404+7*s);
+                EEPROMWriteByte(result.month,405+7*s);
+                EEPROMWriteByte(result.date,406+7*s);
+                
+            }
+            s++;
+            if(s==7)
+            {
+                s=0;
+            }
             flag_scr_trip=0;
         }
+        
+        
         
         if(flag_igbt_trip==1)
 
         {
             LATGbits.LATG9=1;              // Buzzer
             LCD_Command(0x01);
-             __delay_ms(10);
+             __delay_ms(1);
             LCD_String_xy(1,0,"IGBT TRIP");
-            __delay_ms(100);
+            __delay_ms(3);
             flag_igbt_trip=0;
             //flag_igbt_trip=0;
         }
-
-/******************************************************************************/        
         
-       if(OP_Voltage>= Minimum_OP_Voltage) 
-       {
-           IO_RA3_SetLow();
-       }
-       else
-       {
-           IO_RA3_SetHigh();           // Battery_Not_Healthy_Led
-       }
+        
+        
+        
+       
        
 /******************************************************************************/        
        
@@ -577,31 +637,100 @@ void main(void)
         
         if((voltage1==0)||(voltage1>=Maximum_Input_Voltage))
        {
+            
+           
            PWM_RBC_Shut_Down();
            PWM_EBC_Shut_Down();
-           LCD_Command(0x01);
-            __delay_ms(10);
-           LCD_String_xy(1,0,"Y-Phase Absent");
-           __delay_ms(100);  
            
-       }
+          
+       
+           
+           
+           }
+           
+        
+         if((voltage<=Minimum_Input_Voltage)||(voltage1<=Minimum_Input_Voltage )||(voltage2<=Minimum_Input_Voltage))
+        {
+           // LCD_Command(0x01);
+            __delay_ms(1);
+            LCD_String_xy(1,0,"Under Voltage");
+            __delay_ms(3);
+            
+            
+            EEPROMWriteByte(48,0x00+u);
+            
+            if(EEPROMReadByte(0x00+u)==48)
+            {
+                EEPROMWriteByte(result.hour,80+7*u);
+                EEPROMWriteByte(result.minute,81+7*u);
+                EEPROMWriteByte(result.second,82+7*u);
+                EEPROMWriteByte(result.year,83+7*u);
+                EEPROMWriteByte(result.month,84+7*u);
+                EEPROMWriteByte(result.date,85+7*u);
+                
+            
+              
+                
+                
+            
+            
+          
+                        
+            }
+           u++;
+           
+           if(u==7)
+           {
+               u=0;
+           }
+          
+        }
+        else if((voltage>=Maximum_Input_Voltage)||(voltage1>=Maximum_Input_Voltage)||(voltage2>=Maximum_Input_Voltage))
+        {
+            LCD_Command(0x01);
+             __delay_ms(10);
+            LCD_String_xy(1,0,"Over Voltage");
+            __delay_ms(100);
+            
+            EEPROMWriteByte(51,30+h);
+            if(EEPROMReadByte(30)==51)
+            {
+                EEPROMWriteByte(result.hour,450+7*h);
+                EEPROMWriteByte(result.minute,451+7*h);
+                EEPROMWriteByte(result.second,452+7*h);
+                EEPROMWriteByte(result.year,453+7*h);
+                EEPROMWriteByte(result.month,454+7*h);
+                EEPROMWriteByte(result.date,455+7*h);
+            }
+           
+            h++;
+           
+           if(h==7)
+           {
+               h=0;
+           }
+          
+        }
+       
        
 /*********************************************************************************/        
        
         if( flag_over_detected==1)
         {
             LCD_Command(0x01);
-            __delay_ms(10);
+            __delay_ms(1);
            LCD_String_xy(1,0,"Over_Voltage in Phase ");
-           __delay_ms(100);
+           __delay_ms(3);
         }
         
         if(flag_under_detected==1)
         {
             LCD_Command(0x01);
-            __delay_ms(10);
+            __delay_ms(1);
            LCD_String_xy(1,0,"Under_Voltage in Phase");
-           __delay_ms(100);
+           __delay_ms(3);
+           
+                
         }
         
                             
@@ -622,10 +751,28 @@ if ((voltage >Minimum_Input_Voltage && voltage<Maximum_Input_Voltage)&&(voltage1
             if(PORTDbits.RD13==Reverse_Polarity_Detected)
             {
                 LCD_Command(0x01);
-                __delay_ms(10);
+                __delay_ms(1);
                 PWM_RBC_Shut_Down();
                 LCD_String_xy(1,0,"Bat_Rev_Polarity");
-                LATGbits.LATG9=1;
+                __delay_ms(3);
+                //LATGbits.LATG9=1;
+                
+                EEPROMWriteByte(52,38+d);
+                
+                if(EEPROMReadByte(38+d)==52)
+                {
+                EEPROMWriteByte(result.hour,203+7*d);
+                EEPROMWriteByte(result.minute,204+7*d);
+                EEPROMWriteByte(result.second,205+7*d);
+                EEPROMWriteByte(result.year,206+7*d);
+                EEPROMWriteByte(result.month,207+7*d);
+                EEPROMWriteByte(result.date,208+7*d);
+                }
+                d++;
+                if(d==7)
+                {
+                    d=0;
+                }
                 //while(1);
             }
                
@@ -654,6 +801,7 @@ if ((voltage >Minimum_Input_Voltage && voltage<Maximum_Input_Voltage)&&(voltage1
                  
                 PWM_RBC_Shut_Down();
                 flag_scr_trip=1;
+                
                
             }
             if((PORTFbits.RF13==0) &&(flag_igbt_trip==0))
@@ -740,7 +888,7 @@ if ((voltage >Minimum_Input_Voltage && voltage<Maximum_Input_Voltage)&&(voltage1
                     {
                         PWM_RBC_Shut_Down();
                         
-                        __delay_ms(1000);
+                       // __delay_ms(1000);
                         counter_ShortCkt++;
                     }
                     else
@@ -753,7 +901,7 @@ if ((voltage >Minimum_Input_Voltage && voltage<Maximum_Input_Voltage)&&(voltage1
                    if(I_Total>=Short_Ckt_Current)
                     {
                         PWM_RBC_Shut_Down();
-                        __delay_ms(1000);
+                     //   __delay_ms(1000);
                         counter_ShortCkt++;
                     }
                     else
@@ -767,6 +915,33 @@ if ((voltage >Minimum_Input_Voltage && voltage<Maximum_Input_Voltage)&&(voltage1
                    if(I_Total>=Short_Ckt_Current)
                     {
                        PWM_RBC_Shut_Down();
+                       
+                       EEPROMWriteByte(53,46+w);
+                    
+                       EEPROMWriteByte(54,63+o);
+                      
+                       
+                    if(EEPROMReadByte(46+w)==53)
+            {
+                EEPROMWriteByte(result.hour,252+7*w);
+                EEPROMWriteByte(result.minute,253+7*w);
+                EEPROMWriteByte(result.second,254+7*w);
+                EEPROMWriteByte(result.year,255+7*w);
+                EEPROMWriteByte(result.month,256+7*w);
+                EEPROMWriteByte(result.date,257+7*w);
+            }
+                       
+                        o++;
+                       w++;
+                       
+                      if(w==7)
+                    {
+                        w=0;
+                    }
+                    if(o==7)
+                    {
+                        o=0;
+                    }
                        flag_shut_down=1;
                        //break;
                         //__delay_ms(5000);
@@ -786,6 +961,8 @@ if ((voltage >Minimum_Input_Voltage && voltage<Maximum_Input_Voltage)&&(voltage1
                      __delay_ms(10);
                      LCD_String_xy(1,1,"Short circuit");
                     PWM_RBC_Shut_Down();
+                    
+                    
                    
                 }
                                                                                    
@@ -830,28 +1007,33 @@ if ((voltage >Minimum_Input_Voltage && voltage<Maximum_Input_Voltage)&&(voltage1
 
            
             
-              if((R_Y >=540) || (Y_B>=540) || (B_R>=540) &&(flag_over_detected==0))
+              if((R_Y >=Maximum_Input_Voltage_Phase) || (Y_B>=Maximum_Input_Voltage_Phase) || (B_R>=Maximum_Input_Voltage_Phase) &&(flag_over_detected==0))
             {
                 
                    
                   PWM_RBC_Shut_Down();
+                  
+                  
                   flag_over_detected=1;
             }
-              else if((R_Y <=404) || (Y_B<=404) || (B_R<=404) && (flag_under_detected==0))
+              else if((R_Y <=Minimum_Input_Voltage_Phase) || (Y_B<=Minimum_Input_Voltage_Phase) || (B_R<=Minimum_Input_Voltage_Phase) && (flag_under_detected==0))
             {
-                
+                  
                 PWM_RBC_Shut_Down();
+               
+                
                 flag_under_detected=1;
                 
             }
            
               
-               if(result.hour==pre_fixed_time && result.minute>=(0) && result.minute<(minutes_enter))
+              /*else  if(result.hour==pre_fixed_time && result.minute>=(0) && result.minute<(minutes_enter))
         {
             PWM_RBC_Shut_Down();
             if(OP_Voltage<Minimum_OP_Voltage)
             {
                 IO_RA3_SetHigh();
+                
             }
             
             
@@ -860,12 +1042,14 @@ if ((voltage >Minimum_Input_Voltage && voltage<Maximum_Input_Voltage)&&(voltage1
                 IO_RA3_SetLow();
             }
             
-        }
+        }*/
               
            
            
               else if(I_B>=Maximum_Bat_Current)
               {
+                 
+                 
                   
                   k_RBC=k_RBC-0.5;
                    if (k_RBC > 45) 
@@ -911,7 +1095,7 @@ if ((voltage >Minimum_Input_Voltage && voltage<Maximum_Input_Voltage)&&(voltage1
 
 
             }
-            else if((I_B>=Minimum_Settable_Bat_Current) && (I_B<=15) && (flag==5))
+            else if((I_B>=Minimum_Settable_Bat_Current) && (I_B<=15) && (flag==4))
             {
              if(Battery_Current_SP_Enter>I_B)
             {
@@ -962,12 +1146,15 @@ if ((voltage >Minimum_Input_Voltage && voltage<Maximum_Input_Voltage)&&(voltage1
             }
             
             
-            else if(OP_Voltage>=Maximum_OP_Voltage)
+            else if((OP_Voltage>=Maximum_OP_Voltage) &&(flag_over_voltage==0))
             {
                 __delay_ms(2000);
                  LATGbits.LATG9=1;
                 PWM_RBC_Shut_Down();
-                while(1);
+                EEPROMWriteByte(56,54+r);
+                flag_over_voltage=1;
+                
+                //while(1);
             }
             
 
@@ -1296,10 +1483,10 @@ else
 /**************************END EBC MODE*****************************************/
         
 
-        if (l == 0) // BACK button is pressed
+         if (l == 0) // BACK button is pressed
         {
             flag = flag + 1;
-            if (flag >= 9) 
+            if (flag >= 6) 
             {
                 flag = 0;
             }
@@ -1307,7 +1494,7 @@ else
         if (flag == 1) 
         {
             LCD_Command(0x01);
-            __delay_ms(10);
+            __delay_ms(1);
             //LCD_String_xy(1,0,"Input_voltage:");
 
             // LCD_String_xy(1,0,"CT2:");
@@ -1315,30 +1502,29 @@ else
             LCD_String_xy(1, 0, current);
 
 
-            sprintf(Power_Var, "%.1f",power_RBC);
-            LCD_String_xy(1,5,Power_Var);
+            
 
             //LCD_String_xy(1,11,"DC:");
             sprintf(DC, "%.1f", k_RBC);
-            LCD_String_xy(1, 11, DC);
+            LCD_String_xy(2, 11, DC);
 
             //LCD_String_xy(2,0,"CT2:");
             sprintf(current2, "%.1f",I_Total);
             LCD_String_xy(2, 0, current2);
 
             sprintf(output, "%d", OP_Voltage);
-            LCD_String_xy(2, 10, output);
+            LCD_String_xy(1, 11, output);
 
-            sprintf(v, "%d", RBC_SP);
-            LCD_String_xy(2, 4, v);
+            
 
-            __delay_ms(100);
+            __delay_ms(3);
         }
+        
         if (flag == 2) 
         {
 
             LCD_Command(0x01);
-            __delay_ms(10);
+            __delay_ms(1);
             LCD_String_xy(1, 1, "RBC_SP:");
             sprintf(v, "%d", RBC_SP);
             LCD_String_xy(1, 10, v);
@@ -1348,14 +1534,14 @@ else
             sprintf(output, "%d", OP_Voltage);
             LCD_String_xy(2, 12, output);
 
-            __delay_ms(100);
+            __delay_ms(3);
 
         }
 
-        if (flag == 6)
+        if (flag == 0)
         {
             LCD_Command(0x01);
-            __delay_ms(10);
+            __delay_ms(1);
 
 
             LCD_String_xy(1, 0, "PH_B=");
@@ -1371,29 +1557,15 @@ else
             LCD_String_xy(2, 0, "PH_R=");
             sprintf(data2, "%d", voltage2); // Displaying phase R
             LCD_String_xy(2, 5, data2);
-            __delay_ms(100);
+            __delay_ms(3);
         }
 
-        if (flag == 4) {
-            LCD_Command(0x01);
-            __delay_ms(10);
-            LCD_String_xy(1, 1, "EBC_SP:");
-            sprintf(v, "%d", EBC_SP);
-            LCD_String_xy(1, 10, v);
-
-
-            LCD_String_xy(2, 1, "OP_VOLTAGE:");
-            sprintf(output, "%d", OP_Voltage);
-            LCD_String_xy(2, 12, output);
-
-            __delay_ms(100);
-        }
         
         
-        if(flag==5)
+        if(flag==3)
         {
             LCD_Command(0x01);
-            __delay_ms(10);
+            __delay_ms(1);
             LCD_String_xy(1,1,"I_Bat_SP:");
             sprintf(v1,"%d",Battery_Current_SP);
             LCD_String_xy(1,12,v1);
@@ -1402,59 +1574,14 @@ else
             sprintf(output1, "%.1f",I_B);
             LCD_String_xy(2, 12, output1);
             
-            __delay_ms(100);
+            __delay_ms(3);
 
     }
         
-        if(flag==0)
-        {
-           sprintf(current, "%.1f", I_B);
-            LCD_String_xy(1, 0, current);
-
-
-            sprintf(Power_Var, "%.1f",power_EBC);
-            LCD_String_xy(1,5,Power_Var);
-
-            //LCD_String_xy(1,11,"DC:");
-            sprintf(DC, "%.1f", k_EBC);
-            LCD_String_xy(1, 11, DC);
-
-            //LCD_String_xy(2,0,"CT2:");
-            sprintf(current2, "%.1f", I_Total);
-            LCD_String_xy(2, 0, current2);
-
-            sprintf(output, "%d", OP_Voltage);
-            LCD_String_xy(2, 10, output);
-
-            sprintf(v, "%d", EBC_SP);
-            LCD_String_xy(2, 4, v);
-
-            __delay_ms(100);
-            
-           
-        }
+       
         
-        if(flag==7)
-        {
-            LCD_Command(0x01);
-            __delay_ms(1);
-            LCD_String_xy(1,1,"Set time:");
-            sprintf(buffer,"%d",hours);
-            LCD_String_xy(1,11,buffer);
-            sprintf(time,"%d",result.hour);
-            LCD_String_xy(2,1,time);
-            LCD_String_xy(2,4,":");
-             sprintf(time,"%d",result.minute);
-            LCD_String_xy(2,5,time);
-            LCD_String_xy(2,7,":");
-             sprintf(time,"%d",result.second);
-            LCD_String_xy(2,9,time);
-            
-            __delay_ms(30);
-            
-        }
         
-        if(flag==8)
+        if(flag==5)
         {
             LCD_Command(0x01);
             __delay_ms(1);
@@ -1468,6 +1595,36 @@ else
             
         }
         
+        
+        if(flag==4)
+        {
+            
+            LCD_Command(0x01);
+            __delay_ms(1);
+            
+           sprintf(current, "%.1f", I_B);
+           LCD_String_xy(1, 0, current);
+
+
+           
+
+            //LCD_String_xy(1,11,"DC:");
+            sprintf(DC, "%.1f", k_EBC);
+            LCD_String_xy(1, 11, DC);
+
+            //LCD_String_xy(2,0,"CT2:");
+            sprintf(current2, "%.1f", I_Total);
+            LCD_String_xy(2, 0, current2);
+
+            sprintf(output, "%d", OP_Voltage);
+            LCD_String_xy(1, 11, output);
+
+            
+
+            __delay_ms(3);
+            
+           
+        }
         
        
 
@@ -1486,28 +1643,442 @@ else
         
 
         //if thumbdrive is plugged in
-        USBTasks();
+       USBTasks();
         
-        if(USBHostMSDSCSIMediaDetect() || (flag_usb_scr==1))
+        if(USBHostMSDSCSIMediaDetect())
         {
             deviceAttached = TRUE;
             
+            //counter_eeprom=0;
+            //counter_eeprom_1=0;
+            LCD_Command(0x01);
             
              if(FSInit())
             {
+                
                 //Opening a file in mode "w" will create the file if it  doesn't
                 //  exist.  If the file does exist it will delete the old file
                 //  and create a new one that is blank.
                 myFile = FSfopen("Faults3.csv","w+");
+                LCD_String_xy(1,1,"USB Writing");
+                
+                if(EEPROMReadByte(0x00)==48)
+                {
+                    
+                    sprintf(buffer,"%d",EEPROMReadByte(83));
+                    strcat(date,buffer);
+                    strcat(date,"/");
+            
+                    sprintf(buffer,"%d",EEPROMReadByte(84));
+                    strcat(date,buffer);
+                    strcat(date,"/");
+            
+            
+                    sprintf(buffer,"%d",EEPROMReadByte(85));
+                    strcat(date,buffer);
+                    
+                    
+                    sprintf(buffer,"%d",EEPROMReadByte(80));
+                    strcat(time,buffer);
+                    strcat(time,":");
+            
+                    sprintf(buffer,"%d",EEPROMReadByte(81));
+                    strcat(time,buffer);
+                    strcat(time,":");
+            
+            
+                    sprintf(buffer,"%d",EEPROMReadByte(82));
+                    strcat(time,buffer);
+                    
+                    
+                    sprintf(res1,"%s,%s,%s,%s",date,time,"Under Voltage ","Voltage is less in one of the Phase");
+                    FSfwrite(res1,360,1,myFile);
+                    EEPROMWriteByte(0,0x00);
+                    EEPROMWriteByte(0,80);
+                    EEPROMWriteByte(0,81);
+                    EEPROMWriteByte(0,82);
+                    EEPROMWriteByte(0,83);
+                    EEPROMWriteByte(0,84);
+                    EEPROMWriteByte(0,85);
+                }
+                
+                 if(EEPROMReadByte(0x01)==48)
+                {
+                     
+                     
+                    
+                    
+                    sprintf(buffer,"%d",EEPROMReadByte(87));
+                    strcat(time1,buffer);
+                    strcat(time1,":");
+            
+                    sprintf(buffer,"%d",EEPROMReadByte(88));
+                    strcat(time1,buffer);
+                    strcat(time1,":");
+            
+            
+                    sprintf(buffer,"%d",EEPROMReadByte(89));
+                    strcat(time1,buffer);
+                    
+                    
+                    
+                    sprintf(buffer,"%d",EEPROMReadByte(90));
+                    strcat(date1,buffer);
+                    strcat(date1,"/");
+            
+                    sprintf(buffer,"%d",EEPROMReadByte(91));
+                    strcat(date1,buffer);
+                    strcat(date1,"/");
+            
+            
+                    sprintf(buffer,"%d",EEPROMReadByte(92));
+                    strcat(date1,buffer);
+                    
+                    
+                     
+                    
+                     
+                     
+                    sprintf(res1,"\n %s,%s,%s,%s",date1,time1,"Under Voltage","Voltage is less in one of the Phase");
+                    FSfwrite(res1,360,1,myFile);
+                    EEPROMWriteByte(0,0x01);
+                    EEPROMWriteByte(0,87);
+                    EEPROMWriteByte(0,88);
+                    EEPROMWriteByte(0,89);
+                    EEPROMWriteByte(0,90);
+                    EEPROMWriteByte(0,91);
+                    EEPROMWriteByte(0,92);
+                }
                 
                
+                
+                
+                
+                 if(EEPROMReadByte(0x08)==49)
+                {
+                    
+                     
+                    sprintf(buffer,"%d",EEPROMReadByte(401));
+                    strcat(time2,buffer);
+                    strcat(time2,":");
+            
+                    sprintf(buffer,"%d",EEPROMReadByte(402));
+                    strcat(time2,buffer);
+                    strcat(time2,":");
+            
+            
+                    sprintf(buffer,"%d",EEPROMReadByte(403));
+                    strcat(time2,buffer);
+                    
+                    
+                    
+                    sprintf(buffer,"%d",EEPROMReadByte(404));
+                    strcat(date2,buffer);
+                    strcat(date2,"/");
+            
+                    sprintf(buffer,"%d",EEPROMReadByte(405));
+                    strcat(date2,buffer);
+                    strcat(date2,"/");
+            
+            
+                    sprintf(buffer,"%d",EEPROMReadByte(406));
+                    strcat(date2,buffer);
+                     
+                    sprintf(res1,"\n %s,%s, %s,%s",date2,time2,"Ovr Temperature","Over Temperature ");
+                    FSfwrite(res1,250,1,myFile);
+                    EEPROMWriteByte(0,0x08);
+                    
+                   
+                    
+                }
+                
+                
+                if(EEPROMReadByte(0x09)==49)
+                {
+                    
+                     sprintf(buffer,"%d",EEPROMReadByte(408));
+                    strcat(time3,buffer);
+                    strcat(time3,":");
+            
+                    sprintf(buffer,"%d",EEPROMReadByte(409));
+                    strcat(time3,buffer);
+                    strcat(time3,":");
+            
+            
+                    sprintf(buffer,"%d",EEPROMReadByte(410));
+                    strcat(time3,buffer);
+                    
+                    
+                    
+                    sprintf(buffer,"%d",EEPROMReadByte(411));
+                    strcat(date3,buffer);
+                    strcat(date3,"/");
+            
+                    sprintf(buffer,"%d",EEPROMReadByte(412));
+                    strcat(date3,buffer);
+                    strcat(date3,"/");
+            
+            
+                    sprintf(buffer,"%d",EEPROMReadByte(413));
+                    strcat(date3,buffer);
+                    
+                    sprintf(res1,"\n %s,%s ,%s,%s",date3,time3,"Ovr Temperature","Over Temperature ");
+                    FSfwrite(res1,250,1,myFile);
+                    EEPROMWriteByte(0,0x09);
+                }
+                
+                
+                 
+                
+                 if(EEPROMReadByte(0x16)==50)
+                {
+                     
+                     
+                     sprintf(buffer,"%d",EEPROMReadByte(162));
+                    strcat(time4,buffer);
+                    strcat(time4,":");
+            
+                    sprintf(buffer,"%d",EEPROMReadByte(163));
+                    strcat(time4,buffer);
+                    strcat(time4,":");
+            
+            
+                    sprintf(buffer,"%d",EEPROMReadByte(164));
+                    strcat(time4,buffer);
+                    
+                    
+                    
+                    sprintf(buffer,"%d",EEPROMReadByte(165));
+                    strcat(date4,buffer);
+                    strcat(date4,"/");
+            
+                    sprintf(buffer,"%d",EEPROMReadByte(166));
+                    strcat(date4,buffer);
+                    strcat(date4,"/");
+            
+            
+                    sprintf(buffer,"%d",EEPROMReadByte(167));
+                    strcat(date4,buffer);
+                    
+                    sprintf(res1,"\n %s, %s, %s,%s",date4,time4,"Single Phasing Present","Two Phase absent");
+                    FSfwrite(res1,360,1,myFile);
+                    EEPROMWriteByte(0,0x16);
+                }
+                
+                  if(EEPROMReadByte(0x17)==50)
+                {
+                      
+                    sprintf(buffer,"%d",EEPROMReadByte(169));
+                    strcat(time5,buffer);
+                    strcat(time5,":");
+            
+                    sprintf(buffer,"%d",EEPROMReadByte(170));
+                    strcat(time5,buffer);
+                    strcat(time5,":");
+            
+            
+                    sprintf(buffer,"%d",EEPROMReadByte(171));
+                    strcat(time5,buffer);
+                    
+                    
+                    
+                    sprintf(buffer,"%d",EEPROMReadByte(172));
+                    strcat(date5,buffer);
+                    strcat(date5,"/");
+            
+                    sprintf(buffer,"%d",EEPROMReadByte(173));
+                    strcat(date5,buffer);
+                    strcat(date5,"/");
+            
+            
+                    sprintf(buffer,"%d",EEPROMReadByte(174));
+                    strcat(date5,buffer);
+                    
+                    sprintf(res1,"\n %s,%s,%s,%s",date5,time5,"Single Phasing Present","Two Phase absent and only one phase present");
+                    FSfwrite(res1,360,1,myFile);
+                    EEPROMWriteByte(0,0x17);
+                }
+                
                
-               if(flag_usb_scr==1)
-               {
-                sprintf(res1,"\n%s,%s,%s,%s,%s","16.03.2021","4:43:50","4:48:50","SCR Trip","SCR TRIP");
-             FSfwrite(res1,sizeof(res1),1,myFile);  
+                
+                if(EEPROMReadByte(54)==56)
+                {
+                    
+                     sprintf(buffer,"%d",EEPROMReadByte(300));
+                    strcat(time6,buffer);
+                    strcat(time6,":");
+            
+                    sprintf(buffer,"%d",EEPROMReadByte(301));
+                    strcat(time6,buffer);
+                    strcat(time6,":");
+            
+            
+                    sprintf(buffer,"%d",EEPROMReadByte(302));
+                    strcat(time6,buffer);
+                    
+                    
+                    
+                    sprintf(buffer,"%d",EEPROMReadByte(303));
+                    strcat(date6,buffer);
+                    strcat(date6,"/");
+            
+                    sprintf(buffer,"%d",EEPROMReadByte(304));
+                    strcat(date6,buffer);
+                    strcat(date6,"/");
+            
+            
+                    sprintf(buffer,"%d",EEPROMReadByte(305));
+                    strcat(date6,buffer);
+                    
+                    sprintf(res1,"\n %s,%s,%s,%s",date6,time6,"Over Voltage","Maximum output voltage");
+                    FSfwrite(res1,320,1,myFile);
+                    EEPROMWriteByte(0,54);
+                }
+                
+                if(EEPROMReadByte(55)==56)
+                {
+                    sprintf(res1,"\n %s,%s","Over Voltage","Voltage is greater than 480");
+                    FSfwrite(res1,35,1,myFile);
+                    EEPROMWriteByte(0,55);
+                }
+                
+                
+                
+                
+                if(EEPROMReadByte(38)==51)
+                {
+                    sprintf(res1,"\n %s,%s","Reverse Polarity","Battery not connected in proper way");
+                    FSfwrite(res1,35,1,myFile);
+                    EEPROMWriteByte(0,38);
+                }
+                if(EEPROMReadByte(39)==51)
+                {
+                    sprintf(res1,"\n %s,%s","Reverse Polarity","Battery not connected in proper way");
+                    FSfwrite(res1,20,1,myFile);
+                    EEPROMWriteByte(0,39);
+                }
                
-               }
+                if(EEPROMReadByte(46)==54)
+                {
+                    
+                    sprintf(buffer,"%d",EEPROMReadByte(240));
+                    strcat(time7,buffer);
+                    strcat(time7,":");
+            
+                    sprintf(buffer,"%d",EEPROMReadByte(241));
+                    strcat(time7,buffer);
+                    strcat(time7,":");
+            
+            
+                    sprintf(buffer,"%d",EEPROMReadByte(242));
+                    strcat(time7,buffer);
+                    
+                    
+                    
+                    sprintf(buffer,"%d",EEPROMReadByte(243));
+                    strcat(date7,buffer);
+                    strcat(date7,"/");
+            
+                    sprintf(buffer,"%d",EEPROMReadByte(244));
+                    strcat(date7,buffer);
+                    strcat(date7,"/");
+            
+            
+                    sprintf(buffer,"%d",EEPROMReadByte(245));
+                    strcat(date7,buffer);
+                    
+                   sprintf(res1,"\n%s,%s,%s,%s",date7,time7,"Short circuit","Current is more than 42 Amp");
+                    FSfwrite(res1,360,1,myFile);
+                    EEPROMWriteByte(0,46);
+                }
+                
+                if(EEPROMReadByte(48)==54)
+                {
+                    sprintf(res1,"\n%s,%s","Short circuit","Current is more than 42 Amp");
+                    FSfwrite(res1,20,1,myFile);
+                    EEPROMWriteByte(0,47);
+                }
+                
+                
+                
+                if(EEPROMReadByte(63)==53)
+                {
+                    
+                     sprintf(buffer,"%d",EEPROMReadByte(252));
+                    strcat(time8,buffer);
+                    strcat(time8,":");
+            
+                    sprintf(buffer,"%d",EEPROMReadByte(253));
+                    strcat(time8,buffer);
+                    strcat(time8,":");
+            
+            
+                    sprintf(buffer,"%d",EEPROMReadByte(254));
+                    strcat(time8,buffer);
+                    
+                    
+                    
+                    sprintf(buffer,"%d",EEPROMReadByte(255));
+                    strcat(date8,buffer);
+                    strcat(date8,"/");
+            
+                    sprintf(buffer,"%d",EEPROMReadByte(256));
+                    strcat(date8,buffer);
+                    strcat(date8,"/");
+            
+            
+                    sprintf(buffer,"%d",EEPROMReadByte(257));
+                    strcat(date8,buffer);
+                    
+                    sprintf(res1,"\n %s,%s,%s,%s",date8,time8,"Over Current","Current greater than 35");
+                    FSfwrite(res1,20,1,myFile);
+                    EEPROMWriteByte(0,63);
+                }
+                if(EEPROMReadByte(64)==58)
+                {
+                    sprintf(res1,"\n%s","Over Current");
+                    FSfwrite(res1,20,1,myFile);
+                    EEPROMWriteByte(0,64);
+                }
+                
+                
+              
+                
+                
+                
+                
+                
+                
+                
+                
+                
+                
+                
+                
+                
+                
+                LCD_String_xy(1,1,"USB Done");
+                    
+                
+                   
+                    
+                    
+               
+                
+                
+                
+                
+                
+                
+                
+                
+               
+                
+               
+                
+                
+                
+              
                
                
                FSfclose(myFile);
@@ -1519,14 +2090,14 @@ else
                 }
                 
             }
-        
+        }
+      
                 //Just sit here until the device is removed.
                 
             
             
             
         }
-    }
 }
 
     

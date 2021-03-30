@@ -21,4 +21,6 @@ build/default/production/_ext/1472/main.o:  \
 ../function.h  \
 ../pin_manager.h  \
 ../i2c.h  \
- ../rtc.h 
+ ../rtc.h  \
+../spi.h  \
+../spieeprom.h 
